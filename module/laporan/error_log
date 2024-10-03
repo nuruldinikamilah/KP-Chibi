@@ -1,0 +1,14 @@
+[10-Sep-2022 05:21:49 UTC] PHP Parse error:  syntax error, unexpected '"</td>"' (T_CONSTANT_ENCAPSED_STRING), expecting ',' or ';' in /home/dp3m/public_html/pengajuan/module/laporan/download_laporan_pengabdian.php on line 116
+[10-Sep-2022 05:24:39 UTC] PHP Parse error:  syntax error, unexpected '.' in /home/dp3m/public_html/pengajuan/module/laporan/download_laporan_pengabdian.php on line 124
+[10-Sep-2022 05:38:02 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/dp3m/public_html/pengajuan/module/laporan/download_laporan_pengabdian.php on line 54
+[10-Sep-2022 05:38:02 UTC] PHP Warning:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, null given in /home/dp3m/public_html/pengajuan/module/laporan/download_laporan_pengabdian.php on line 86
+[10-Sep-2022 05:38:11 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/dp3m/public_html/pengajuan/module/laporan/download_laporan_pengabdian.php on line 54
+[10-Sep-2022 05:38:11 UTC] PHP Warning:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, null given in /home/dp3m/public_html/pengajuan/module/laporan/download_laporan_pengabdian.php on line 86
+[10-Sep-2022 05:38:17 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/dp3m/public_html/pengajuan/module/laporan/download_laporan_pengabdian.php on line 54
+[10-Sep-2022 05:38:17 UTC] PHP Warning:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, null given in /home/dp3m/public_html/pengajuan/module/laporan/download_laporan_pengabdian.php on line 86
+[10-Sep-2022 05:43:18 UTC] PHP Parse error:  syntax error, unexpected '{' in /home/dp3m/public_html/pengajuan/module/laporan/download_laporan_pengabdian.php on line 93
+[10-Sep-2022 05:43:29 UTC] PHP Parse error:  syntax error, unexpected '{' in /home/dp3m/public_html/pengajuan/module/laporan/download_laporan_pengabdian.php on line 93
+[10-Sep-2022 05:43:31 UTC] PHP Parse error:  syntax error, unexpected '{' in /home/dp3m/public_html/pengajuan/module/laporan/download_laporan_pengabdian.php on line 93
+[10-Sep-2022 05:43:31 UTC] PHP Parse error:  syntax error, unexpected '{' in /home/dp3m/public_html/pengajuan/module/laporan/download_laporan_pengabdian.php on line 93
+[10-Sep-2022 05:43:40 UTC] PHP Parse error:  syntax error, unexpected 'is_null' (T_STRING), expecting '(' in /home/dp3m/public_html/pengajuan/module/laporan/download_laporan_pengabdian.php on line 92
+[10-Sep-2022 05:48:02 UTC] PHP Parse error:  syntax error, unexpected '}' in /home/dp3m/public_html/pengajuan/module/laporan/download_laporan_pengabdian.php on line 211

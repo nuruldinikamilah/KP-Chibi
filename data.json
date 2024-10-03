@@ -1,0 +1,43 @@
+[
+    {
+    "STATUS": "OK",
+    "KARYAWAN": 
+    {
+        "kode_karyawan": 1760,
+        "nip": "41277006052",
+        "pass": "demo",
+        "nama": "Angga Setiyadi",
+        "email": "angga.setiyadi@email.unikom.ac.id",
+        "nama_dan_gelar": "Angga Setiyadi, M.Kom.",
+        "photo": "https://lh3.googleusercontent.com/a-/AOh14Gjb3k_5XlZTL4SWqGz1Z7MKvMjzYHziZ8D58JnACAh6I7x231A__Czu_S0NMRu_UBY1i3YYT6Q0mzH-2dzhg2Bgw9S742uKwHc2qfesFzFcgudEFoOn-HIB2IThlC5wC3M1LbB_Uu68rnJlMsVOOVZn_4-COKTOMD_zb7-y9XveOJeUKGXQKi3_LIcLM0BrpuHcZo4DW5mzxIOYXpklZR2",
+        "dosen": 1
+    }
+    },
+    {
+      "STATUS": "OK",
+      "KARYAWAN": 
+      {
+        "kode_karyawan": 315,
+        "nip": "41277006134",
+        "pass": "demo",
+        "nama": "Han Han Maulana",
+        "email": "HanHanMaulana@email.unikom.ac.id",
+        "nama_dan_gelar": "Han Han Maulana, S.T, M.Kom",
+        "photo": "https://lh3.googleusercontent.com/a-/AOh14GgZCGxzogP-FParpURL4Yq5BSY8IZ-Rr6vctBVuUg=s50",
+        "dosen": 1
+      }  
+    },
+    {
+      "STATUS": "OK",
+      "KARYAWAN": {
+        "kode_karyawan": 330,
+        "nip": "412770002",
+        "pass": "demo",
+        "nama": "Assoc. Prof. Dr. Ir. Herman S. Soegoto MBA.",
+        "email": "-",
+        "nama_dan_gelar": "Assoc. Prof. Dr. Ir. Herman S. Soegoto MBA.",
+        "photo": "https://lh3.googleusercontent.com/a-/AOh14GjdgtzmuuXc90jvnco7oV-yZnp4aX7IV9Jt5x_BuyE=s50",
+        "dosen": 1
+      }
+    }
+ ]

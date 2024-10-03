@@ -1,0 +1,20 @@
+[
+   {
+      "STATUS": "OK",
+      "MAHASISWA": 
+      {
+        "nim": "10110257",
+        "nama": "DHIKA NOVIANSYAH",
+        "email": null
+      }
+  },
+  {
+      "STATUS": "OK",
+      "MAHASISWA": 
+      {
+        "nim": "10110111",
+        "nama": "RIEFKY RAMADHAN",
+        "email": "riefky_ramadhan@email.unikom.ac.id"
+      }
+   }
+ ]
