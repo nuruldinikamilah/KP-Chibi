@@ -179,8 +179,12 @@ if(isset($_GET['status']))
                                     <i class="fa fa-plus"></i>
                                     <span><?php echo $kata; ?> File</span>
                                     <input type="file" name="file_lp" id="file_dokumen_lembar_pengesahan" accept="application/pdf" />
-
                                 </span>
+                                                                <!-- Tombol Baru -->
+                                <button type="button" class="btn btn-primary btn-xs m-r-5" onclick="window.location.href='module/penelitian_usulan_baru/frm_langkah_empat_tanda_tangan.php';">
+                                <i class="fa fa-plus"></i>
+                                 Tanda Tangan 
+                                 </button>
                                 <label id="nama_upload_file_lp"></label>
                                  
                             </td>
