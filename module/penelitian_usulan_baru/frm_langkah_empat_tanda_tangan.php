@@ -88,176 +88,214 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF with Image Editing</title>
-    <style>
-        body {
-            display: flex;
-            height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-        }
-        .container {
-            display: flex;
-            width: 100%;
-            flex-direction: row;
-            padding: 20px;
-        }
-        .half-page {
-            width: 50%;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin: 10px;
-        }
-        video {
-            border-radius: 8px;
-            width: 100%;
-            height: auto;
-            margin-bottom: 15px;
-        }
-        canvas {
-            border-radius: 8px;
-            width: 100%;
-            height: auto;
-            margin-top: 15px;
-        }
-        input, button {
-            display: block;
-            width: 100%;
-            margin-top: 15px;
-            padding: 10px;
-            font-size: 16px;
-        }
-        button {
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF with Image Editing</title>
+  <style>
+    body {
+      display: flex;
+      min-height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: center;
+      width: 100%;
+      padding: 20px;
+    }
+
+    .left, .right {
+      width: 45%;
+      max-width: 600px;
+      margin: 10px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+    }
+
+    .left {
+      margin-right: 20px;
+      padding:20px;
+    }
+
+    h1, h2 {
+      text-align: center;
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+    }
+
+    video {
+      border-radius: 8px;
+      width: 50%;
+      height: auto;
+      margin:auto;
+      margin-bottom: 10px;
+    }
+
+    canvas {
+      border-radius: 8px;
+      width: auto;
+      height: auto;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+      width: 100%;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input, button {
+        width: 100%;
+        box-sizing: border-box;
+      padding: 8px;
+      font-size: 14px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #editCanvas {
+      border: 1px solid #ccc;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Left half: Capture webcam image and generate PDF -->
-        <div class="half-page">
-            <h2>Capture Gambar dari Webcam</h2>
-            <video id="video" autoplay></video>
-            
-            <form action="" method="POST" enctype="multipart/form-data" id="pdfForm">
-                <label for="pdfUpload">Unggah File PDF:</label>
-                <input type="file" name="pdf_file" id="pdfUpload" accept="application/pdf" required>
-                
-                <label for="imageUpload">Unggah Gambar:</label>
-                <input type="file" name="uploaded_image" id="imageUpload" accept="image/*">
-                
-                <input type="hidden" name="image" id="imageData">
-                <input type="hidden" name="date" id="dateData">
-                <input type="hidden" name="positionX" id="positionX">
-                <input type="hidden" name="positionY" id="positionY">
-                <input type="hidden" name="imageWidth" id="imageWidth">
-                <input type="hidden" name="imageHeight" id="imageHeight">
-
-                <button id="capture">Ambil Gambar & Simpan PDF</button>
-            </form>
+  <div class="container">
+    <!-- Left section for uploads -->
+    <div class="left">
+      <h2>Upload and Edit Document</h2>
+      <video id="video" autoplay></video>
+      <form action="" method="POST" enctype="multipart/form-data" id="pdfForm">
+        <div class="form-group">
+          <label for="pdfUpload">Upload PDF:</label>
+          <input type="file" name="pdf_file" id="pdfUpload" accept="application/pdf" required>
         </div>
-
-        <!-- Right half: Canvas for PDF pages and image editing -->
-        <div class="half-page">
-            <h2>Preview PDF & Edit Gambar</h2>
-            <canvas id="editCanvas" width="800" height="1100"></canvas> <!-- A4 size in pixels at 72 DPI -->
+        <div class="form-group">
+          <label for="imageUpload">Upload Image (Tanda Tangan):</label>
+          <input type="file" name="uploaded_image" id="imageUpload" accept="image/*">
         </div>
+        <input type="hidden" name="image" id="imageData">
+        <input type="hidden" name="date" id="dateData">
+        <input type="hidden" name="positionX" id="positionX">
+        <input type="hidden" name="positionY" id="positionY">
+        <input type="hidden" name="imageWidth" id="imageWidth">
+        <input type="hidden" name="imageHeight" id="imageHeight">
+        <button id="capture">Capture Image & Save PDF</button>
+      </form>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.5.207/pdf.min.js"></script>
-    <script>
-        var video = document.getElementById('video');
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(function (stream) {
-                video.srcObject = stream;
-            })
-            .catch(function (err) {
-                alert("Error accessing camera: " + err);
-            });
+    <!-- Right section for preview -->
+    <div class="right">
+      <h2>Document Preview</h2>
+      <canvas id="editCanvas" width="700" height="700"></canvas>
+    </div>
+  </div>
 
-        document.getElementById('capture').addEventListener('click', function () {
-            var canvas = document.createElement('canvas');
-            canvas.width = 640;
-            canvas.height = 480;
-            var context = canvas.getContext('2d');
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            var imageData = canvas.toDataURL('image/png');
-            document.getElementById('imageData').value = imageData;
-            document.getElementById('dateData').value = new Date().toLocaleString();
-            
-            document.getElementById('pdfForm').submit();
-        });
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.5.207/pdf.min.js"></script>
+  <script>
+    var video = document.getElementById('video');
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(function (stream) {
+        video.srcObject = stream;
+      })
+      .catch(function (err) {
+        alert("Error accessing camera: " + err);
+      });
 
-        var canvas = new fabric.Canvas('editCanvas');
+    document.getElementById('capture').addEventListener('click', function () {
+      var canvas = document.createElement('canvas');
+      canvas.width = 640;
+      canvas.height = 480;
+      var context = canvas.getContext('2d');
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      var imageData = canvas.toDataURL('image/png');
+      document.getElementById('imageData').value = imageData;
+      document.getElementById('dateData').value = new Date().toLocaleString();
 
-        document.getElementById('pdfUpload').addEventListener('change', function (e) {
-            var file = e.target.files[0];
-            var reader = new FileReader();
-            reader.onload = function () {
-                var typedArray = new Uint8Array(this.result);
-                pdfjsLib.getDocument(typedArray).promise.then(function (pdf) {
-                    pdf.getPage(1).then(function (page) {
-                        var viewport = page.getViewport({ scale: 1.5 });
-                        var pdfCanvas = document.createElement('canvas');
-                        pdfCanvas.width = viewport.width;
-                        pdfCanvas.height = viewport.height;
-                        var pdfContext = pdfCanvas.getContext('2d');
-                        page.render({ canvasContext: pdfContext, viewport: viewport }).promise.then(function () {
-                            var imgElement = new Image();
-                            imgElement.src = pdfCanvas.toDataURL();
-                            imgElement.onload = function () {
-                                var imgInstance = new fabric.Image(imgElement, {
-                                    left: 0,
-                                    top: 0,
-                                    selectable: false
-                                });
-                                canvas.add(imgInstance);
-                                canvas.renderAll();
-                            };
-                        });
-                    });
+      document.getElementById('pdfForm').submit();
+    });
+
+    var canvas = new fabric.Canvas('editCanvas');
+
+    document.getElementById('pdfUpload').addEventListener('change', function (e) {
+      var file = e.target.files[0];
+      var reader = new FileReader();
+      reader.onload = function () {
+        var typedArray = new Uint8Array(this.result);
+        pdfjsLib.getDocument(typedArray).promise.then(function (pdf) {
+          pdf.getPage(1).then(function (page) {
+            var viewport = page.getViewport({ scale: 1.2 });
+            var pdfCanvas = document.createElement('canvas');
+            pdfCanvas.width = viewport.width;
+            pdfCanvas.height = viewport.height;
+            var pdfContext = pdfCanvas.getContext('2d');
+            page.render({ canvasContext: pdfContext, viewport: viewport }).promise.then(function () {
+              var imgElement = new Image();
+              imgElement.src = pdfCanvas.toDataURL();
+              imgElement.onload = function () {
+                var imgInstance = new fabric.Image(imgElement, {
+                  left: 0,
+                  top: 0,
+                  selectable: false
                 });
-            };
-            reader.readAsArrayBuffer(file);
+                canvas.add(imgInstance);
+                canvas.renderAll();
+              };
+            });
+          });
         });
+      };
+      reader.readAsArrayBuffer(file);
+    });
 
-        document.getElementById('imageUpload').addEventListener('change', function (e) {
-            var file = e.target.files[0];
-            var reader = new FileReader();
-            reader.onload = function () {
-                var imgElement = new Image();
-                imgElement.src = this.result;
-                imgElement.onload = function () {
-                    var imgInstance = new fabric.Image(imgElement, {
-                        left: 50,
-                        top: 50,
-                        scaleX: 0.5,
-                        scaleY: 0.5,
-                    });
-                    canvas.add(imgInstance);
-                    canvas.renderAll();
+    document.getElementById('imageUpload').addEventListener('change', function (e) {
+      var file = e.target.files[0];
+      var reader = new FileReader();
+      reader.onload = function () {
+        var imgElement = new Image();
+        imgElement.src = this.result;
+        imgElement.onload = function () {
+          var imgInstance = new fabric.Image(imgElement, {
+            left: 50,
+            top: 50,
+            scaleX: 0.4,
+            scaleY: 0.4
+          });
+          canvas.add(imgInstance);
+          canvas.renderAll();
 
-                    document.getElementById('positionX').value = imgInstance.left;
-                    document.getElementById('positionY').value = imgInstance.top;
-                    document.getElementById('imageWidth').value = imgInstance.width * imgInstance.scaleX;
-                    document.getElementById('imageHeight').value = imgInstance.height * imgInstance.scaleY;
-                };
-            };
-            reader.readAsDataURL(file);
-        });
-    </script>
+          document.getElementById('positionX').value = imgInstance.left;
+          document.getElementById('positionY').value = imgInstance.top;
+          document.getElementById('imageWidth').value = imgInstance.width * imgInstance.scaleX;
+          document.getElementById('imageHeight').value = imgInstance.height * imgInstance.scaleY;
+        };
+      };
+      reader.readAsDataURL(file);
+    });
+  </script>
 </body>
 </html>
+
