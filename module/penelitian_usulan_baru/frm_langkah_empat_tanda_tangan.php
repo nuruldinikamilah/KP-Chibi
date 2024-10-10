@@ -96,33 +96,51 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             display: flex;
             height: 100vh;
             margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
         }
         .container {
             display: flex;
             width: 100%;
+            flex-direction: row;
+            padding: 20px;
         }
         .half-page {
             width: 50%;
-            padding: 10px;
-            position: relative;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 10px;
         }
         video {
-            border: 1px solid black;
-            width: 300px;
-            height: 200px;
-            position: absolute;
-            top: 10px;
-            left: 10px;
-        }
-        button {
-            display: block;
-            margin-top: 220px;
-        }
-        canvas {
-            border: 1px solid black;
+            border-radius: 8px;
             width: 100%;
             height: auto;
-            position: relative;
+            margin-bottom: 15px;
+        }
+        canvas {
+            border-radius: 8px;
+            width: 100%;
+            height: auto;
+            margin-top: 15px;
+        }
+        input, button {
+            display: block;
+            width: 100%;
+            margin-top: 15px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
@@ -130,23 +148,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="container">
         <!-- Left half: Capture webcam image and generate PDF -->
         <div class="half-page">
+            <h2>Capture Gambar dari Webcam</h2>
             <video id="video" autoplay></video>
-            <button id="capture">Capture & Save PDF</button>
+            
             <form action="" method="POST" enctype="multipart/form-data" id="pdfForm">
+                <label for="pdfUpload">Unggah File PDF:</label>
+                <input type="file" name="pdf_file" id="pdfUpload" accept="application/pdf" required>
+                
+                <label for="imageUpload">Unggah Gambar:</label>
+                <input type="file" name="uploaded_image" id="imageUpload" accept="image/*">
+                
                 <input type="hidden" name="image" id="imageData">
                 <input type="hidden" name="date" id="dateData">
                 <input type="hidden" name="positionX" id="positionX">
                 <input type="hidden" name="positionY" id="positionY">
                 <input type="hidden" name="imageWidth" id="imageWidth">
                 <input type="hidden" name="imageHeight" id="imageHeight">
-                <input type="file" name="pdf_file" id="pdfUpload" accept="application/pdf" required>
-                <input type="file" name="uploaded_image" id="imageUpload" accept="image/*">
-                <button type="submit" style="display: none;">Save PDF</button>
+
+                <button id="capture">Ambil Gambar & Simpan PDF</button>
             </form>
         </div>
 
         <!-- Right half: Canvas for PDF pages and image editing -->
         <div class="half-page">
+            <h2>Preview PDF & Edit Gambar</h2>
             <canvas id="editCanvas" width="800" height="1100"></canvas> <!-- A4 size in pixels at 72 DPI -->
         </div>
     </div>
@@ -160,7 +185,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 video.srcObject = stream;
             })
             .catch(function (err) {
-                console.log("Error: " + err);
+                alert("Error accessing camera: " + err);
             });
 
         document.getElementById('capture').addEventListener('click', function () {
@@ -173,14 +198,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             document.getElementById('imageData').value = imageData;
             document.getElementById('dateData').value = new Date().toLocaleString();
             
-            // Automatically submit the form after capturing the image
             document.getElementById('pdfForm').submit();
         });
 
-        // Initialize fabric.js canvas
         var canvas = new fabric.Canvas('editCanvas');
 
-        // Load PDF and render on fabric.js canvas
         document.getElementById('pdfUpload').addEventListener('change', function (e) {
             var file = e.target.files[0];
             var reader = new FileReader();
@@ -200,7 +222,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 var imgInstance = new fabric.Image(imgElement, {
                                     left: 0,
                                     top: 0,
-                                    selectable: false // Prevent moving the background image
+                                    selectable: false
                                 });
                                 canvas.add(imgInstance);
                                 canvas.renderAll();
@@ -212,7 +234,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             reader.readAsArrayBuffer(file);
         });
 
-        // Add uploaded image to canvas
         document.getElementById('imageUpload').addEventListener('change', function (e) {
             var file = e.target.files[0];
             var reader = new FileReader();
@@ -228,7 +249,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     });
                     canvas.add(imgInstance);
                     canvas.renderAll();
-                    // Set the dimensions for the hidden inputs to capture the position and size of the uploaded image
+
                     document.getElementById('positionX').value = imgInstance.left;
                     document.getElementById('positionY').value = imgInstance.top;
                     document.getElementById('imageWidth').value = imgInstance.width * imgInstance.scaleX;
