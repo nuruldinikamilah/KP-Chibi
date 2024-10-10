@@ -130,6 +130,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       margin-bottom: 20px;
     }
 
+    .left h2, .right h2 {
+      background-color: black;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
     video {
       border-radius: 8px;
       width: 50%;
@@ -298,4 +305,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   </script>
 </body>
 </html>
+
 
