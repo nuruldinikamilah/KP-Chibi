@@ -113,16 +113,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       width: 45%;
       max-width: 600px;
       margin: 10px;
-      padding: 20px;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       background-color: #fff;
     }
 
-    .left {
+    .container-left {
       margin-right: 20px;
       padding:20px;
+      
     }
+    
 
     h1, h2 {
       text-align: center;
@@ -156,8 +157,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     input, button {
-        width: 100%;
-        box-sizing: border-box;
+      width: 100%;
+      box-sizing: border-box;
       padding: 8px;
       font-size: 14px;
       border-radius: 5px;
@@ -165,27 +166,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     button {
-      background-color: #007BFF;
+      background-color: #5bc0de;
       color: white;
       border: none;
       cursor: pointer;
     }
 
     button:hover {
-      background-color: #0056b3;
+      background-color: #5bc0de;
     }
 
     #editCanvas {
       border: 1px solid #ccc;
       margin-top: 10px;
     }
+    .container-fluid {
+      background-color: #333;
+      padding:10px;
+    }
+    .navbar-brand {
+      color: white;
+    }
+
   </style>
 </head>
-<body>
-  <div class="container">
-    <!-- Left section for uploads -->
-    <div class="left">
-      <h2>Upload and Edit Document</h2>
+<body>  
+    <div class="left"> 
+      <div class="container-fluid">
+        <a class="navbar-brand" >Upload and Edit Document</a>
+      </div>
+
+    <div class="container-left">
       <video id="video" autoplay></video>
       <form action="" method="POST" enctype="multipart/form-data" id="pdfForm">
         <div class="form-group">
@@ -205,11 +216,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <button id="capture">Capture Image & Save PDF</button>
       </form>
     </div>
+  </div>
 
     <!-- Right section for preview -->
-    <div class="right">
-      <h2>Document Preview</h2>
-      <canvas id="editCanvas" width="700" height="700"></canvas>
+    <div class="right"> 
+      <div class="container-fluid">
+        <a class="navbar-brand" >Document Preview</a>
+      </div>
+      <canvas id="editCanvas" width="1000" height="700"></canvas>
     </div>
   </div>
 
