@@ -19,10 +19,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Get image data and date from form
     $imageData = $_POST['image'];
     $date = $_POST['date'];
-    $positionX = $_POST['positionX'];
-    $positionY = $_POST['positionY'];
-    $imageWidth = $_POST['imageWidth'];
-    $imageHeight = $_POST['imageHeight'];
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      // Retrieve JavaScript values passed through the form
+      $positionX = $_POST['positionX']; // X position
+      $positionY = $_POST['positionY']; // Y position
+      $imageWidth = $_POST['imageWidth']; // Image width
+      $imageHeight = $_POST['imageHeight']; // Image height
+      
+
+      $positionX_mm = $positionX / 3.78;
+      $positionY_mm = $positionY / 3.78;
+      $imageWidth_mm = $imageWidth / 3.78;
+      $imageHeight_mm = $imageHeight / 3.78;
+
+  }
 
     // Remove 'data:image/png;base64,' from the image data
     $imageData = str_replace('data:image/png;base64,', '', $imageData);
@@ -40,8 +50,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $pdf1->SetFont('Arial', 'B', 16); // Set font: Arial, Bold, 16pt
     $pdf1->Text(10, 115, 'Captured on: ' . $date);
     // Save the PDF for webcam image
-    $pdfName1 = '../../dokumen_bukti_verifikasi/pdf/Bukti_verifikasi_webcam_' . time() . '.pdf';
+    $webcame_name = 'Bukti_verifikasi_webcam_' . time() . '.pdf';
+    $pdfName1 = '../../dokumen_bukti_verifikasi/pdf/' . $webcame_name;
     $pdf1->Output('F', $pdfName1);
+    
+
 
     // Create a new FPDI instance for the uploaded PDF
     $pdf2 = new Fpdi();
@@ -65,22 +78,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Add the uploaded image to the PDF based on the user-defined position and size
     if ($uploadPath) {
-        $pdf2->Image($uploadPath, $positionX_mm, $positionY_mm, $imageWidth_mm, $imageHeight_mm);
+      $pdf2->Image($uploadPath, $positionX_mm, $positionY_mm, $imageWidth_mm, $imageHeight_mm);
     }
-
+    
     // Add the captured date to the PDF
     $pdf2->SetFont('Arial', 'B', 16); // Set font: Arial, Bold, 16pt
-    $pdf2->Text(10, 115, 'Captured on: ' . $date);
+    // $pdf2->Text(10, 115, 'Captured on: ' . $date);
 
     // Save the PDF for the uploaded image
-    $pdfName2 = '../../dokumen_bukti_verifikasi/pdf/Bukti_verifikasi_uploaded_' . time() . '.pdf';
+    $pdf_nm = 'Bukti_verifikasi_uploaded_' . time() . '.pdf';
+    $pdfName2 = '../../dokumen_bukti_verifikasi/pdf/' . $pdf_nm;
     $pdf2->Output('F', $pdfName2);
 
+    $pdf3 = new FPDI();
+    $pdf3->AddPage();
+
+    $pdfPath = $pdfName2;
+    $pageCount = $pdf3->setSourceFile($pdfPath);
+    $templateId = $pdf3->importPage(1);
+    $pdf3->useTemplate($templateId, 0, 0, 210, 297); // Adjust width and height for A4 size
+
+    if ($uploadPath) {
+      $qrCodePath = 'D:\Programs\XAMPP\htdocs\Kerja Praktek\KP-Chibi\dokumen_bukti_verifikasi\qr_code\qr_code_' . time() . '.png';
+      $pdfUrl = 'http://localhost/Kerja%20Praktek/KP-Chibi/dokumen_bukti_verifikasi/pdf/' . $webcame_name; // Change to the actual URL or path where the image will be hosted
+      QRcode::png($pdfUrl, $qrCodePath);
+      $pdf3->Image($qrCodePath, 335.8562025316455/3.78, 611/3.78, 50/3.78, 50/3.78);
+    }
+
+    $pdf3->Output('F', $pdfName2);
+
     // Display success messages
-    echo "PDF with webcam image saved successfully!<br>";
+    // echo "PDF with webcam image saved successfully!<br>";
     echo "<a href='" . $pdfName1 . "'>Download PDF with Webcam Image</a><br>";
     
-    echo "PDF with uploaded image saved successfully!<br>";
+    // echo "PDF with uploaded image saved successfully!<br>";
     echo "<a href='" . $pdfName2 . "'>Download PDF with Uploaded Image</a><br>";
 }
 ?>
@@ -230,93 +261,116 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       <div class="container-fluid">
         <a class="navbar-brand" >Document Preview</a>
       </div>
-      <canvas id="editCanvas" width="1000" height="700"></canvas>
+      <canvas id="editCanvas" width="790" height="1120"></canvas>
     </div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.5.207/pdf.min.js"></script>
   <script>
-    var video = document.getElementById('video');
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(function (stream) {
-        video.srcObject = stream;
-      })
-      .catch(function (err) {
-        alert("Error accessing camera: " + err);
-      });
-
-    document.getElementById('capture').addEventListener('click', function () {
-      var canvas = document.createElement('canvas');
-      canvas.width = 640;
-      canvas.height = 480;
-      var context = canvas.getContext('2d');
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
-      var imageData = canvas.toDataURL('image/png');
-      document.getElementById('imageData').value = imageData;
-      document.getElementById('dateData').value = new Date().toLocaleString();
-
-      document.getElementById('pdfForm').submit();
+  var video = document.getElementById('video');
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(function (stream) {
+      video.srcObject = stream;
+    })
+    .catch(function (err) {
+      alert("Error accessing camera: " + err);
     });
 
-    var canvas = new fabric.Canvas('editCanvas');
+  document.getElementById('capture').addEventListener('click', function () {
+    var canvas = document.createElement('canvas');
+    canvas.width = 640;
+    canvas.height = 480;
+    var context = canvas.getContext('2d');
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    var imageData = canvas.toDataURL('image/png');
+    document.getElementById('imageData').value = imageData;
+    document.getElementById('dateData').value = new Date().toLocaleString();
 
-    document.getElementById('pdfUpload').addEventListener('change', function (e) {
-      var file = e.target.files[0];
-      var reader = new FileReader();
-      reader.onload = function () {
-        var typedArray = new Uint8Array(this.result);
-        pdfjsLib.getDocument(typedArray).promise.then(function (pdf) {
-          pdf.getPage(1).then(function (page) {
-            var viewport = page.getViewport({ scale: 1.2 });
-            var pdfCanvas = document.createElement('canvas');
-            pdfCanvas.width = viewport.width;
-            pdfCanvas.height = viewport.height;
-            var pdfContext = pdfCanvas.getContext('2d');
-            page.render({ canvasContext: pdfContext, viewport: viewport }).promise.then(function () {
-              var imgElement = new Image();
-              imgElement.src = pdfCanvas.toDataURL();
-              imgElement.onload = function () {
-                var imgInstance = new fabric.Image(imgElement, {
-                  left: 0,
-                  top: 0,
-                  selectable: false
-                });
-                canvas.add(imgInstance);
-                canvas.renderAll();
-              };
-            });
+    document.getElementById('pdfForm').submit();
+  });
+
+  var canvas = new fabric.Canvas('editCanvas');
+
+  document.getElementById('pdfUpload').addEventListener('change', function (e) {
+    var file = e.target.files[0];
+    var reader = new FileReader();
+    reader.onload = function () {
+      var typedArray = new Uint8Array(this.result);
+      pdfjsLib.getDocument(typedArray).promise.then(function (pdf) {
+        pdf.getPage(1).then(function (page) {
+          var viewport = page.getViewport({ scale: 1.33 });
+          var pdfCanvas = document.createElement('canvas');
+          pdfCanvas.width = viewport.width;
+          pdfCanvas.height = viewport.height;
+          var pdfContext = pdfCanvas.getContext('2d');
+          page.render({ canvasContext: pdfContext, viewport: viewport }).promise.then(function () {
+            var imgElement = new Image();
+            imgElement.src = pdfCanvas.toDataURL();
+            imgElement.onload = function () {
+              var imgInstance = new fabric.Image(imgElement, {
+                left: 0,
+                top: 0,
+                selectable: false
+              });
+              canvas.add(imgInstance);
+              canvas.renderAll();
+            };
           });
         });
-      };
-      reader.readAsArrayBuffer(file);
-    });
+      });
+    };
+    reader.readAsArrayBuffer(file);
+  });
 
-    document.getElementById('imageUpload').addEventListener('change', function (e) {
-      var file = e.target.files[0];
-      var reader = new FileReader();
-      reader.onload = function () {
-        var imgElement = new Image();
-        imgElement.src = this.result;
-        imgElement.onload = function () {
-          var imgInstance = new fabric.Image(imgElement, {
-            left: 50,
-            top: 50,
-            scaleX: 0.4,
-            scaleY: 0.4
-          });
-          canvas.add(imgInstance);
-          canvas.renderAll();
+  document.getElementById('imageUpload').addEventListener('change', function (e) {
+    var file = e.target.files[0];
+    var reader = new FileReader();
+    reader.onload = function () {
+      var imgElement = new Image();
+      imgElement.src = this.result;
+      imgElement.onload = function () {
+        var imgInstance = new fabric.Image(imgElement, {
+          left: 50,
+          top: 50,
+          scaleX: 0.4,
+          scaleY: 0.4
+        });
+        canvas.add(imgInstance);
+        canvas.renderAll();
 
-          document.getElementById('positionX').value = imgInstance.left;
-          document.getElementById('positionY').value = imgInstance.top;
-          document.getElementById('imageWidth').value = imgInstance.width * imgInstance.scaleX;
-          document.getElementById('imageHeight').value = imgInstance.height * imgInstance.scaleY;
-        };
+        // Dynamically log position and size changes
+        function updateImageData() {
+          var positionX = imgInstance.left;
+          var positionY = imgInstance.top;
+          var imageWidth = imgInstance.width * imgInstance.scaleX;
+          var imageHeight = imgInstance.height * imgInstance.scaleY;
+
+          console.log('Position X:', positionX);
+          console.log('Position Y:', positionY);
+          console.log('Image Width:', imageWidth);
+          console.log('Image Height:', imageHeight);
+
+          // Update hidden fields
+          document.getElementById('positionX').value = positionX;
+          document.getElementById('positionY').value = positionY;
+          document.getElementById('imageWidth').value = imageWidth;
+          document.getElementById('imageHeight').value = imageHeight;
+        }
+
+        // Listen to image move/scale events and log updated values
+        imgInstance.on('moving', updateImageData);
+        imgInstance.on('scaling', updateImageData);
+        imgInstance.on('scaled', updateImageData); // Ensure scaling updates are logged
+
+        // Initial log
+        updateImageData();
       };
-      reader.readAsDataURL(file);
-    });
-  </script>
+    };
+    reader.readAsDataURL(file);
+  });
+</script>
+
 </body>
 </html>
 
