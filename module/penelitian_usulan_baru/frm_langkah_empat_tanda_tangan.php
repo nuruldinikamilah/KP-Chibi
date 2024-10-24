@@ -1,7 +1,7 @@
 <?php
-require __DIR__ . '/vendor/phpqrcode/qrlib.php'; // Include PHP QR Code library
-require __DIR__ . '/vendor/setasign/fpdf/fpdf.php'; // Include FPDF library
-require __DIR__ . '/vendor/setasign/fpdi/src/autoload.php'; // Include FPDI for importing existing PDF
+require  __DIR__  . '/vendor/phpqrcode/qrlib.php'; // Include PHP QR Code library
+require  __DIR__  . '/vendor/setasign/fpdf/fpdf.php'; // Include FPDF library
+require  __DIR__  . '/vendor/setasign/fpdi/src/autoload.php'; // Include FPDI for importing existing PDF
 
 use setasign\Fpdi\Fpdi; // Use FPDI for PDF manipulation
 
@@ -98,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $templateId = $pdf3->importPage(1);
     $pdf3->useTemplate($templateId, 0, 0, 210, 297); // Adjust width and height for A4 size
 
-    if ($uploadPath) {
+if ($uploadPath) {
       // $qrCodePath = 'D:\Programs\XAMPP\htdocs\Kerja Praktek\KP-Chibi\dokumen_bukti_verifikasi\qr_code\qr_code_' . time() . '.png';
       $qrCodePath = '../../dokumen_bukti_verifikasi/qr_code/qr_code_' . time() . '.png';
       $pdfUrl = 'http://localhost/Kerja%20Praktek/KP-Chibi/dokumen_bukti_verifikasi/pdf/' . $webcame_name; // Change to the actual URL or path where the image will be hosted
@@ -150,6 +150,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       background-color: #fff;
     }
 
+    .right {
+      width: 45%; 
+      max-width: 1000px; 
+      margin: 10px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+      height: 1000px; 
+      overflow: auto; 
+    }
+
     .container-left {
       margin-right: 20px;
       padding:20px;
@@ -181,6 +192,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       border-radius: 8px;
       width: auto;
       height: auto;
+      width: 100%; 
+      height: auto; 
     }
 
     .form-group {
@@ -235,7 +248,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <a class="navbar-brand" >Upload and Edit Document</a>
       </div>
 
-    <div class="container-left">
+
+<div class="container-left">
       <video id="video" autoplay></video>
       <form action="" method="POST" enctype="multipart/form-data" id="pdfForm">
         <div class="form-group">
@@ -325,7 +339,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     reader.readAsArrayBuffer(file);
   });
 
-  document.getElementById('imageUpload').addEventListener('change', function (e) {
+document.getElementById('imageUpload').addEventListener('change', function (e) {
     var file = e.target.files[0];
     var reader = new FileReader();
     reader.onload = function () {
