@@ -155,7 +155,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       
     }
     
-
     h1, h2 {
       text-align: center;
       font-size: 1.6rem;
@@ -204,10 +203,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     button {
-      background-color: #5bc0de;
+      background-color: #24A0ED;
       color: white;
       border: none;
       cursor: pointer;
+      margin-bottom: 10px
     }
 
     button:hover {
@@ -242,7 +242,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           <input type="file" name="pdf_file" id="pdfUpload" accept="application/pdf" required>
         </div>
         <div class="form-group">
-          <label for="imageUpload">Upload Image (Tanda Tangan):</label>
+          <label for="imageUpload">Upload Image (Signature):</label>
           <input type="file" name="uploaded_image" id="imageUpload" accept="image/*">
         </div>
         <input type="hidden" name="image" id="imageData">
@@ -252,6 +252,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <input type="hidden" name="imageWidth" id="imageWidth">
         <input type="hidden" name="imageHeight" id="imageHeight">
         <button id="capture">Capture Image & Save PDF</button>
+        <button type="button" id="deleteImage" style="background-color: red; color: white;">Delete Signature</button>
       </form>
     </div>
   </div>
@@ -368,6 +369,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       };
     };
     reader.readAsDataURL(file);
+  });
+   document.getElementById('deleteImage').addEventListener('click', function () {
+    // Hapus data gambar dari input tersembunyi
+    document.getElementById('imageData').value = '';
+    
+    // Jika ada gambar yang ditampilkan di canvas, hapus gambar tersebut
+    canvas.remove(canvas.getActiveObject()); 
+  
+    alert("Are you sure you want to delete the image?");
   });
 </script>
 
