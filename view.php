@@ -462,7 +462,11 @@ echo "<h2></h2><hr>";
 
 									<li><a href="view.php?menu=penelitian&act=usulan_didaftarkan"><span class='<?php if($_GET['act']=='usulan_didaftarkan') echo"blink"/*BLINK*/; else echo""/*Tidak Blink*/?>'><font color='<?php if($_GET['act']=='usulan_didaftarkan') echo"red"/*BLINK*/; else echo""/*Tidak Blink*/?>'> Usulan Di Daftarkan</span></a></font>
 									</li>
+
+									<li><a href="view.php?menu=penelitian&act=list_pengajuan"><span class='<?php if($_GET['act']=='list_pengajuan') echo"blink"/*BLINK*/; else echo""/*Tidak Blink*/?>'><font color='<?php if($_GET['act']=='list_pengajuan') echo"red"/*BLINK*/; else echo""/*Tidak Blink*/?>'> List Pengajuan</span></a></font>
+									</li>
 								</ul>
+
 								<li class='has-sub'>
 								<a href='javascript:;'>
 								    <b class='caret pull-right'></b>
