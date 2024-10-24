@@ -99,7 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $pdf3->useTemplate($templateId, 0, 0, 210, 297); // Adjust width and height for A4 size
 
     if ($uploadPath) {
-      $qrCodePath = 'D:\Programs\XAMPP\htdocs\Kerja Praktek\KP-Chibi\dokumen_bukti_verifikasi\qr_code\qr_code_' . time() . '.png';
+      // $qrCodePath = 'D:\Programs\XAMPP\htdocs\Kerja Praktek\KP-Chibi\dokumen_bukti_verifikasi\qr_code\qr_code_' . time() . '.png';
+      $qrCodePath = '../../dokumen_bukti_verifikasi/qr_code/qr_code_' . time() . '.png';
       $pdfUrl = 'http://localhost/Kerja%20Praktek/KP-Chibi/dokumen_bukti_verifikasi/pdf/' . $webcame_name; // Change to the actual URL or path where the image will be hosted
       QRcode::png($pdfUrl, $qrCodePath);
       $pdf3->Image($qrCodePath, 335.8562025316455/3.78, 611/3.78, 50/3.78, 50/3.78);
