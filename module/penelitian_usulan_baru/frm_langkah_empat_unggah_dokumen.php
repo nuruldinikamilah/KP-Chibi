@@ -180,11 +180,21 @@ if(isset($_GET['status']))
                                     <span><?php echo $kata; ?> File</span>
                                     <input type="file" name="file_lp" id="file_dokumen_lembar_pengesahan" accept="application/pdf" />
                                 </span>
-                                                                <!-- Tombol Baru -->
-                                <button type="button" class="btn btn-primary btn-xs m-r-5" onclick="window.location.href='module/penelitian_usulan_baru/frm_langkah_empat_tanda_tangan.php';">
+                                <!-- Tombol Baru -->
+                                 <?php
+                                if (isset($_GET['idx']))
+                                    {
+                                        $link_1="idx=".$_GET['idx'];
+                                        ?>
+                                        <a class="hidden-phone" href="view.php?menu=penelitian&act=usulan_baru_langkah_empat_tanda_tangan&<?php echo $link_1;?>">
+                                        <?php
+                                    }
+                                 ?>
+                                <!-- <button type="button" class="btn btn-primary btn-xs m-r-5" onclick="window.location.href='module/penelitian_usulan_baru/frm_langkah_empat_tanda_tangan.php';"> -->
                                 <i class="fa fa-plus"></i>
                                  Tanda Tangan 
-                                 </button>
+                                </a>
+                                 <!-- </button> -->
                                 <label id="nama_upload_file_lp"></label>
                                  
                             </td>

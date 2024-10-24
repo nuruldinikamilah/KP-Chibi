@@ -17,7 +17,11 @@
 		else if (($_GET['menu']=='penelitian')&&($_GET['act']=='usulan_baru_langkah_empat'))
 		{
 			include "module/penelitian_usulan_baru/frm_langkah_empat_unggah_dokumen.php";
-		}  
+		}
+		else if (($_GET['menu']=='penelitian')&&($_GET['act']=='usulan_baru_langkah_empat_tanda_tangan'))
+		{
+			include "module/penelitian_usulan_baru/frm_langkah_empat_tanda_tangan.php";
+		}   
 		else if (($_GET['menu']=='penelitian')&&($_GET['act']=='usulan_baru_langkah_lima'))
 		{
 			include "module/penelitian_usulan_baru/frm_langkah_lima_validasi.php";
