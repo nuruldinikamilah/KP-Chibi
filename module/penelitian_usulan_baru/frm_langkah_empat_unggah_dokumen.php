@@ -72,6 +72,16 @@ if(isset($_GET['status']))
                                     });
                             </script>
                             <?php
+   }else if ($_GET['status']=='berhasil_capture')
+   {
+                            ?>
+                           <script>
+                                    $(document).ready(function() 
+                                    {
+                                        $('#modal-dialog-berhasil-capture').modal('show');
+                                    });0
+                            </script>
+                            <?php
    }
 }
 ?>     

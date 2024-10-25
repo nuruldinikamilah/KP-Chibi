@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
   $idx = $_POST['idx'];
   if($pdfName1 && $pdfName2){
-    header('location:../../view.php?menu=penelitian&act=usulan_baru_langkah_empat&idx='.$idx.'&file1='.urlencode($pdfUrl1).'&file2='.urlencode($pdfUrl2));
+    header('location:../../view.php?menu=penelitian&act=usulan_baru_langkah_empat&idx='.$idx.'&file1='.urlencode($pdfUrl1).'&file2='.urlencode($pdfUrl2).'&status=berhasil_capture');
   }
   // Display success messages
   // echo "PDF with webcam image saved successfully!<br>";

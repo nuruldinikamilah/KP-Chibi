@@ -1177,6 +1177,32 @@ setInterval(blink_text, 1000);
     </div>
 <!-- END VALIDASI SUKSES UBAH -->
 
+<!-- VALIDASI BERHASIL CAPTURE -->
+<div class="modal fade" id="modal-dialog-berhasil-capture">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">PESAN</h4>
+                </div>
+                <div class="modal-body">
+                <table>
+                        <tr>
+                            <td>
+                                <img src="img/logo_unikom.jpg">
+                            </td>
+                            <td width="100%" align="center">
+                                <center><b><h5>File berhasil disimpan!</h5> </center>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                  <a href="javascript:;" class="btn btn-sm btn-white" data-dismiss="modal">Tutup</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
 <!-- VALIDASI ERROR MYSQL -->
 <div class="modal fade" id="modal-dialog-gagal-db">
