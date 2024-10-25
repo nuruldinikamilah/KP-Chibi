@@ -208,7 +208,15 @@ if(isset($_GET['status']))
                                     </td>
                                      <td class="text-left align-text-bottom col-md-2 align-middle">
                                         <br><a href="<?php echo "dokumen_upload_lp_penelitian/".$r['dokumen_lembar_pengesahan'];?>" download>Download File Lembar Pengesahan Yang Sudah Ditandatangani</a>
-
+                                        <?php
+                                         if(isset($_GET['file1'])) 
+                                         {
+                                           $pdfName1 = $_GET['file1'];
+                                           $pdfName2 = $_GET['file2'];
+                                           echo "<a href='" . $pdfName1 . "' target='_blank'>Download PDF with Webcam Image</a><br>";
+                                           echo "<a href='" . $pdfName2 . "'target='_blank'>Download PDF with Uploaded Image</a><br>";
+                                         }
+                                        ?>
                                     </td>
                                 </tr>
                             <?php
