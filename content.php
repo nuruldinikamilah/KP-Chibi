@@ -30,9 +30,9 @@
 		{
 			include "module/penelitian_usulan_baru/frm_usulan_didaftarkan.php";
 		}   
-		else if (($_GET['menu']=='penelitian')&&($_GET['act']=='list_pengajuan'))
+		else if (($_GET['menu']=='penelitian')&&($_GET['act']=='status_pengajuan'))
 		{
-			include "module/penelitian_usulan_baru/frm_list_pengajuan.php";
+			include "module/penelitian_usulan_baru/frm_status_pengajuan.php";
 		} 
 		else if (($_GET['menu']=='reviewer')&&($_GET['act']=='daftar_reviewer'))
 		{
