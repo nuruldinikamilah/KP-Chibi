@@ -71,7 +71,7 @@
               <input type="hidden" name="imageWidth" id="imageWidth">
               <input type="hidden" name="imageHeight" id="imageHeight">
               <div class="btn-action" style="display: flex; flex-direction: column; gap: 10px;">
-                <button id="capture" class="btn btn-primary">Capture Image & Save PDF</button>
+                <button id="capture" type="submit" name="submit_button" class="btn btn-primary">Capture Image & Save PDF</button>
                 <button type="button" id="deleteImage" class="btn btn-danger">Delete Signature</button>
               </div>
               <a href="" target="_blank"></a>
@@ -123,6 +123,41 @@
 
     var canvas = new fabric.Canvas('editCanvas');
 
+    // Function to fit the uploaded image into the canvas
+    function fitImageIntoCanvas(imgElement) {
+      // Create a Fabric image from the uploaded image element
+      fabric.Image.fromURL(imgElement.src, function (img) {
+        // Get canvas dimensions
+        var canvasWidth = canvas.width;
+        var canvasHeight = canvas.height;
+
+        // Get image dimensions
+        var imgWidth = img.width;
+        var imgHeight = img.height;
+
+        // Calculate scale factors for width and height
+        var scaleWidth = canvasWidth / imgWidth;
+        var scaleHeight = canvasHeight / imgHeight;
+
+        // Choose the smaller scale factor to fit the image
+        var scaleFactor = Math.min(scaleWidth, scaleHeight);
+
+        // Scale the image proportionally
+        img.scale(scaleFactor);
+
+        // Center the image on the canvas
+        img.set({
+          left: (canvasWidth - img.getScaledWidth()) / 2,
+          top: (canvasHeight - img.getScaledHeight()) / 2,
+          selectable: false,  
+          evented: false      
+        });
+
+        // Add the image to the canvas
+        canvas.add(img);
+      });
+    }
+    
     document.getElementById('pdfUpload').addEventListener('change', function(e) {
       var file = e.target.files[0];
       var reader = new FileReader();
@@ -144,7 +179,8 @@
               var imgElement = new Image();
               imgElement.src = pdfCanvas.toDataURL();
               imgElement.onload = function() {
-                var imgInstance = new fabric.Image(imgElement, {
+                var imgInstance = new fabric.Image(
+                  fitImageIntoCanvas(imgElement), {
                   left: 0,
                   top: 0,
                   selectable: false
@@ -205,6 +241,7 @@
       };
       reader.readAsDataURL(file);
     });
+
     document.getElementById('deleteImage').addEventListener('click', function() {
       // Hapus data gambar dari input tersembunyi
       document.getElementById('imageData').value = '';
