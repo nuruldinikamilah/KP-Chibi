@@ -59,7 +59,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   // Create a new FPDI instance for the uploaded PDF
   $pdf2 = new Fpdi();
   $pdf2->AddPage();
-
+  $pdf2->SetAutoPageBreak(false);  // Disable automatic page breaks
+  $pdf2->SetMargins(0, 0, 0);  // Disable margins to match Fabric.js
   // Load the uploaded PDF and use it as the background
   if (isset($_FILES['pdf_file']) && $_FILES['pdf_file']['error'] == UPLOAD_ERR_OK) {
     $pdfPath = $_FILES['pdf_file']['tmp_name'];
@@ -70,15 +71,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     die("Error uploading PDF.");
   }
 
-  // Convert pixels to millimeters for PDF
-  $positionX_mm = $positionX / 3.78;
-  $positionY_mm = $positionY / 3.78;
-  $imageWidth_mm = $imageWidth / 3.78;
-  $imageHeight_mm = $imageHeight / 3.78;
+  // Convert pixels to centimeters for PDF
+  $positionX_cm = ($positionX / 96 * 25.4)*1.28;
+  $positionY_cm = ($positionY / 96 * 25.4)*1.28;
+  $imageWidth_cm = ($imageWidth / 96 * 25.4)*1.28;
+  $imageHeight_cm = ($imageHeight / 96 * 25.4)*1.28;
+
 
   // Add the uploaded image to the PDF based on the user-defined position and size
   if ($uploadPath) {
-    $pdf2->Image($uploadPath, $positionX_mm, $positionY_mm, $imageWidth_mm, $imageHeight_mm);
+    $pdf2->Image($uploadPath, $positionX_cm, $positionY_cm, $imageWidth_cm, $imageHeight_cm);
   }
 
   // Add the captured date to the PDF

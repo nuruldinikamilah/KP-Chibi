@@ -206,7 +206,11 @@
             left: 50,
             top: 50,
             scaleX: 0.4,
-            scaleY: 0.4
+            scaleY: 0.4,
+            hasControls: true,  // Show resize/scale handles
+            lockRotation: true, // Prevent rotation if needed
+            cornerSize: 10,     // Size of control corners
+            transparentCorners: false, // Visible corner controls
           });
           canvas.add(imgInstance);
           canvas.renderAll();
