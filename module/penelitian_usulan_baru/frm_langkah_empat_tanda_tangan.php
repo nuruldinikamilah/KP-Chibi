@@ -57,12 +57,8 @@
             <form  action="module/penelitian_usulan_baru/frm_langkah_empat_tanda_tangan_proses.php" method="POST" enctype="multipart/form-data" id="pdfForm">
               <input type='hidden' name='idx' value='<?php echo $_GET['idx'];?>'>
               <div class="form-group">
-                <label for="pdfUpload">Upload PDF:</label>
+                <label for="pdfUpload">Tambah File:</label>
                 <input type="file" name="pdf_file" id="pdfUpload" accept="application/pdf" required>
-              </div>
-              <div class="form-group">
-                <label for="imageUpload">Upload Image (Signature):</label>
-                <input type="file" name="uploaded_image" id="imageUpload" accept="image/*">
               </div>
               <input type="hidden" name="image" id="imageData">
               <input type="hidden" name="date" id="dateData">
@@ -71,8 +67,8 @@
               <input type="hidden" name="imageWidth" id="imageWidth">
               <input type="hidden" name="imageHeight" id="imageHeight">
               <div class="btn-action" style="display: flex; flex-direction: column; gap: 10px;">
-                <button id="capture" type="submit" name="submit_button" class="btn btn-primary">Capture Image & Save PDF</button>
-                <button type="button" id="deleteImage" class="btn btn-danger">Delete Signature</button>
+                <button id="capture" type="submit" name="submit_button" class="btn btn-primary">Simpan</button>
+                <!-- <button type="button" id="deleteImage" class="btn btn-danger">Delete Signature</button> -->
               </div>
               <a href="" target="_blank"></a>
               <div>

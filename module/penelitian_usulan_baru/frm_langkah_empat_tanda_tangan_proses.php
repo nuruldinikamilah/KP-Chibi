@@ -8,14 +8,6 @@ session_start();
 use setasign\Fpdi\Fpdi; // Use FPDI for PDF manipulation
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-  // Check if an image is uploaded
-  $uploadPath = '';
-  if (isset($_FILES['uploaded_image']) && $_FILES['uploaded_image']['error'] == UPLOAD_ERR_OK) {
-    $uploadPath = '../../dokumen_bukti_verifikasi/gambar/uploaded_image_' . time() . '.png';
-    move_uploaded_file($_FILES['uploaded_image']['tmp_name'], $uploadPath);
-  } else {
-    die("Error uploading image.");
-  }
 
   // Get image data and date from form
   $imageData = $_POST['image'];
@@ -79,9 +71,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
   // Add the uploaded image to the PDF based on the user-defined position and size
-  if ($uploadPath) {
-    $pdf2->Image($uploadPath, $positionX_cm, $positionY_cm, $imageWidth_cm, $imageHeight_cm);
-  }
+  // if ($uploadPath) {
+  //   $pdf2->Image($uploadPath, $positionX_cm, $positionY_cm, $imageWidth_cm, $imageHeight_cm);
+  // }
 
   // Add the captured date to the PDF
   $pdf2->SetFont('Arial', 'B', 16); // Set font: Arial, Bold, 16pt
@@ -100,13 +92,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $templateId = $pdf3->importPage(1);
   $pdf3->useTemplate($templateId, 0, 0, 210, 297); // Adjust width and height for A4 size
 
-  if ($uploadPath) {
-    // $qrCodePath = 'D:\Programs\XAMPP\htdocs\Kerja Praktek\KP-Chibi\dokumen_bukti_verifikasi\qr_code\qr_code_' . time() . '.png';
-    $qrCodePath = '../../dokumen_bukti_verifikasi/qr_code/qr_code_' . time() . '.png';
-    $pdfUrl = 'http://localhost/Kerja%20Praktek/KP-Chibi/dokumen_bukti_verifikasi/pdf/' . $webcame_name; // Change to the actual URL or path where the image will be hosted
-    QRcode::png($pdfUrl, $qrCodePath);
-    $pdf3->Image($qrCodePath, 335.8562025316455 / 3.78, 611 / 3.78, 50 / 3.78, 50 / 3.78);
-  }
+  $qrCodePath = '../../dokumen_bukti_verifikasi/qr_code/qr_code_' . time() . '.png';
+  $pdfUrl = 'http://localhost/Kerja%20Praktek/KP-Chibi/dokumen_bukti_verifikasi/pdf/' . $webcame_name; // Change to the actual URL or path where the image will be hosted
+  QRcode::png($pdfUrl, $qrCodePath);
+  $pdf3->Image($qrCodePath, 420 / 3.78, 625 / 3.78, 50 / 3.78, 50 / 3.78);
 
   $pdf3->Output('F', $pdfName2);
 
