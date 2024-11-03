@@ -95,7 +95,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $qrCodePath = '../../dokumen_bukti_verifikasi/qr_code/qr_code_' . time() . '.png';
   $pdfUrl = 'http://localhost/Kerja%20Praktek/KP-Chibi/dokumen_bukti_verifikasi/pdf/' . $webcame_name; // Change to the actual URL or path where the image will be hosted
   QRcode::png($pdfUrl, $qrCodePath);
-  $pdf3->Image($qrCodePath, 420 / 3.78, 625 / 3.78, 50 / 3.78, 50 / 3.78);
+  if ($_SESSION['nik_user'] == '41277006052') {
+    $pdf3->Image($qrCodePath, 420 / 3.78, 625 / 3.78, 50 / 3.78, 50 / 3.78);
+  } elseif ($_SESSION['nik_user'] == '41277006134') {
+    $pdf3->Image($qrCodePath, 100 / 3.78, 625 / 3.78, 50 / 3.78, 50 / 3.78);
+  }
 
   $pdf3->Output('F', $pdfName2);
 
