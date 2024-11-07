@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   // $pdf2->Text(10, 115, 'Captured on: ' . $date);
 
   // Save the PDF for the uploaded image
-  $pdf_nm = 'Lampiran Tanda Tangan.pdf';
+  $pdf_nm = 'Lampiran Tanda Tangan' . time() . '.pdf';
   $pdfName2 = '../../dokumen_bukti_verifikasi/pdf/' . $pdf_nm;
   $pdf2->Output('F', $pdfName2);
 
