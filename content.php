@@ -38,6 +38,10 @@
 		{
 			include "module/penelitian_usulan_baru/frm_list_pengajuan.php";
 		} 
+		else if (($_GET['menu']=='penelitian')&&($_GET['act']=='verifikasi_tanda_tangan'))
+		{
+			include "module/penelitian_usulan_baru/frm_verifikasi_tanda_tangan.php";
+		} 
 		else if (($_GET['menu']=='reviewer')&&($_GET['act']=='daftar_reviewer'))
 		{
 			include "module/reviewer/frm_tampil_reviewer.php";

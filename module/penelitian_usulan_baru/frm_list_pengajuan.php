@@ -63,10 +63,11 @@ if (isset($_SESSION['nik_user']) && $_SESSION['nik_user'] == '41277006052') {
 
             // Fetch the results as an associative array and display them
             while ($row = mysqli_fetch_assoc($result)) {
+                $file_path = "dokumen_bukti_verifikasi/pdf/" . $row['tanda_tangan_pengaju'];
                 echo "<tr>";
                 echo "<td>" . htmlspecialchars($row['idx_dok_tanda_tangan']) . "</td>"; // Assuming there's an 'id' column
                 echo "<td>" . htmlspecialchars($row['tanda_tangan_pengaju']) . "</td>";
-                echo "<td><a class='button' href='view.php?menu=penelitian&act=usulan_baru_langkah_empat_tanda_tangan'>Verifikasi</a></td>";
+                echo "<td><a class='button' href='view.php?menu=penelitian&act=verifikasi_tanda_tangan&file=".$row['tanda_tangan_pengaju']."'>Verifikasi</a></td>";
                 echo "</tr>";
             }
 
@@ -138,8 +139,8 @@ if (isset($_SESSION['nik_user']) && $_SESSION['nik_user'] == '41277006052') {
             while ($row = mysqli_fetch_assoc($result)) {
                 echo "<tr>";
                 echo "<td>" . htmlspecialchars($row['idx_dok_tanda_tangan']) . "</td>"; // Assuming there's an 'id' column
-                echo "<td>" . htmlspecialchars($row['tanda_tangan_kaprodi']) . "</td>";
-                echo "<td><a class='button' href='view.php?menu=penelitian&act=usulan_baru_langkah_empat_tanda_tangan'>Verifikasi</a></td>";
+                echo "<td>" . htmlspecialchars($row['tanda_tangan_pengaju']) . "</td>";
+                echo "<td><a class='button' href='view.php?menu=penelitian&act=verifikasi_tanda_tangan&file=".$row['tanda_tangan_pengaju']."'>Verifikasi</a></td>";
                 echo "</tr>";
             }
 
