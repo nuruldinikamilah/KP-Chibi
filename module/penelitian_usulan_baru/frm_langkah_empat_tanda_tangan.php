@@ -54,6 +54,9 @@
         <div>
           <div style="display: flex; justify-content: center; flex-direction: column;">
             <video id="video" autoplay></video>
+
+           
+              
             <form  action="module/penelitian_usulan_baru/frm_langkah_empat_tanda_tangan_proses.php" method="POST" enctype="multipart/form-data" id="pdfForm">
               <input type='hidden' name='idx' value='<?php echo $_GET['idx'];?>'>
               <div class="form-group">
@@ -70,14 +73,14 @@
                 <button id="capture" type="submit" name="submit_button" class="btn btn-primary">Simpan</button>
                 <!-- <button type="button" id="deleteImage" class="btn btn-danger">Delete Signature</button> -->
               </div>
-              <a href="" target="_blank"></a>
+              
               <div>
                 <?php
                   if(isset($_GET['file1'])) 
                   {
                     $pdfName1 = $_GET['file1'];
                     $pdfName2 = $_GET['file2'];
-                    echo "<a href='" . $pdfName1 . "' target='_blank'>Download PDF with Webcam Image</a><br>";
+                    echo "<a href='" . $pdfName1 . "' target='module/penelitian_usulan_baru/frm_langkah_empat_unggah_dokumen.php'>Download PDF with Webcam Image</a><br>";
                     echo "<a href='" . $pdfName2 . "'target='_blank'>Download PDF with Uploaded Image</a><br>";
                   }
                 ?>

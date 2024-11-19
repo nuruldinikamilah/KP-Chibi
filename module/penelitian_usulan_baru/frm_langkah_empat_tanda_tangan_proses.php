@@ -6,13 +6,14 @@ include "../../config/koneksi.php";
 session_start();
 
 use setasign\Fpdi\Fpdi; // Use FPDI for PDF manipulation
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-  // Debugging input
-  echo "<pre>";
-  print_r($_POST);
-  echo "</pre>";
-  exit; // Hentikan eksekusi untuk memastikan data diterima dengan benar
-}
+// if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+//   // Debugging input
+//   // echo "<pre>";
+//   // print_r($_POST);
+//   // echo "</pre>";
+//   // exit; // Hentikan eksekusi untuk memastikan data diterima dengan benar
+// }
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
   // Get image data and date from form
@@ -134,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // If we have a valid column, proceed with the query
     if (!empty($column)) {
-        $query = "INSERT INTO tanda_tangan_penelitian($column) VALUES('$pdf_nm')";
+        $query = "INSERT INTO pengajuan_penelitian WHERE ($column) VALUES('$pdf_nm')";
         $query_verif = "INSERT INTO bukti_verif(file_verif) VALUES('$webcame_name')";
 
         // Run the queries
