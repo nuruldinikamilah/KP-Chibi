@@ -6,11 +6,13 @@
       margin-bottom: 5px;
       font-weight: bold;
     }
+
     .form-group input[type="file"] {
       width: 100%;
       padding: 5px;
       border: solid 1px black;
     }
+
     .btn-action button {
       border-radius: 5px;
       padding: 10px;
@@ -18,15 +20,17 @@
       cursor: pointer;
       margin-bottom: 10px
     }
+
     canvas {
       border-radius: 8px;
       border: solid 1px black;
     }
+
     video {
       border-radius: 8px;
       width: 40%;
       height: auto;
-      margin:auto;
+      margin: auto;
       margin-bottom: 10px;
     }
   </style>
@@ -54,11 +58,8 @@
         <div>
           <div style="display: flex; justify-content: center; flex-direction: column;">
             <video id="video" autoplay></video>
-
-           
-              
-            <form  action="module/penelitian_usulan_baru/frm_langkah_empat_tanda_tangan_proses.php" method="POST" enctype="multipart/form-data" id="pdfForm">
-              <input type='hidden' name='idx' value='<?php echo $_GET['idx'];?>'>
+            <form action="module/penelitian_usulan_baru/frm_langkah_empat_tanda_tangan_proses.php" method="POST" enctype="multipart/form-data" id="pdfForm">
+              <input type='hidden' name='idx' value='<?php echo $_GET['idx']; ?>'>
               <div class="form-group">
                 <label for="pdfUpload">Tambah File:</label>
                 <input type="file" name="pdf_file" id="pdfUpload" accept="application/pdf" required>
@@ -73,16 +74,15 @@
                 <button id="capture" type="submit" name="submit_button" class="btn btn-primary">Simpan</button>
                 <!-- <button type="button" id="deleteImage" class="btn btn-danger">Delete Signature</button> -->
               </div>
-              
+
               <div>
                 <?php
-                  if(isset($_GET['file1'])) 
-                  {
-                    $pdfName1 = $_GET['file1'];
-                    $pdfName2 = $_GET['file2'];
-                    echo "<a href='" . $pdfName1 . "' target='module/penelitian_usulan_baru/frm_langkah_empat_unggah_dokumen.php'>Download PDF with Webcam Image</a><br>";
-                    echo "<a href='" . $pdfName2 . "'target='_blank'>Download PDF with Uploaded Image</a><br>";
-                  }
+                if (isset($_GET['file1'])) {
+                  $pdfName1 = $_GET['file1'];
+                  $pdfName2 = $_GET['file2'];
+                  echo "<a href='" . $pdfName1 . "' target='module/penelitian_usulan_baru/frm_langkah_empat_unggah_dokumen.php'>Download PDF with Webcam Image</a><br>";
+                  echo "<a href='" . $pdfName2 . "'target='_blank'>Download PDF with Uploaded Image</a><br>";
+                }
                 ?>
               </div>
             </form>
@@ -125,7 +125,7 @@
     // Function to fit the uploaded image into the canvas
     function fitImageIntoCanvas(imgElement) {
       // Create a Fabric image from the uploaded image element
-      fabric.Image.fromURL(imgElement.src, function (img) {
+      fabric.Image.fromURL(imgElement.src, function(img) {
         // Get canvas dimensions
         var canvasWidth = canvas.width;
         var canvasHeight = canvas.height;
@@ -148,15 +148,15 @@
         img.set({
           left: (canvasWidth - img.getScaledWidth()) / 2,
           top: (canvasHeight - img.getScaledHeight()) / 2,
-          selectable: false,  
-          evented: false      
+          selectable: false,
+          evented: false
         });
 
         // Add the image to the canvas
         canvas.add(img);
       });
     }
-    
+
     document.getElementById('pdfUpload').addEventListener('change', function(e) {
       var file = e.target.files[0];
       var reader = new FileReader();
@@ -180,10 +180,10 @@
               imgElement.onload = function() {
                 var imgInstance = new fabric.Image(
                   fitImageIntoCanvas(imgElement), {
-                  left: 0,
-                  top: 0,
-                  selectable: false
-                });
+                    left: 0,
+                    top: 0,
+                    selectable: false
+                  });
                 canvas.add(imgInstance);
                 canvas.renderAll();
               };
@@ -206,9 +206,9 @@
             top: 50,
             scaleX: 0.4,
             scaleY: 0.4,
-            hasControls: true,  // Show resize/scale handles
+            hasControls: true, // Show resize/scale handles
             lockRotation: true, // Prevent rotation if needed
-            cornerSize: 10,     // Size of control corners
+            cornerSize: 10, // Size of control corners
             transparentCorners: false, // Visible corner controls
           });
           canvas.add(imgInstance);

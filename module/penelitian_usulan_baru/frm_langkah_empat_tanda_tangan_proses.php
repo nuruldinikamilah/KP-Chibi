@@ -3,6 +3,8 @@ require  __DIR__  . '/vendor/phpqrcode/qrlib.php'; // Include PHP QR Code librar
 require  __DIR__  . '/vendor/setasign/fpdf/fpdf.php'; // Include FPDF library
 require  __DIR__  . '/vendor/setasign/fpdi/src/autoload.php'; // Include FPDI for importing existing PDF
 include "../../config/koneksi.php";
+include "../../lib/enkripsi_decrpt.php";
+
 session_start();
 
 use setasign\Fpdi\Fpdi; // Use FPDI for PDF manipulation
@@ -71,10 +73,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   }
 
   // Convert pixels to centimeters for PDF
-  $positionX_cm = ($positionX / 96 * 25.4)*1.28;
-  $positionY_cm = ($positionY / 96 * 25.4)*1.28;
-  $imageWidth_cm = ($imageWidth / 96 * 25.4)*1.28;
-  $imageHeight_cm = ($imageHeight / 96 * 25.4)*1.28;
+  $positionX_cm = ($positionX / 96 * 25.4) * 1.28;
+  $positionY_cm = ($positionY / 96 * 25.4) * 1.28;
+  $imageWidth_cm = ($imageWidth / 96 * 25.4) * 1.28;
+  $imageHeight_cm = ($imageHeight / 96 * 25.4) * 1.28;
 
 
   // Add the uploaded image to the PDF based on the user-defined position and size
@@ -114,84 +116,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $pdfUrl1 = $baseUrl . 'dokumen_bukti_verifikasi/pdf/' . basename($pdfName1);
   $pdfUrl2 = $baseUrl . 'dokumen_bukti_verifikasi/pdf/' . basename($pdfName2);
 
-  $idx = $_POST['idx'];
-  if($pdfName1 && $pdfName2){
-    header('location:../../view.php?menu=penelitian&act=usulan_baru_langkah_empat&idx='.$idx.'&file1='.urlencode($pdfUrl1).'&file2='.urlencode($pdfUrl2).'&status=berhasil_capture');
+  $idx=my_simple_crypt($_POST['idx'], 'd' );
+
+  // If we have a valid column, proceed with the query
+  $query_pdf = "UPDATE `pengajuan_penelitian` SET `dokumen_lembar_pengesahan` = '".$pdf_nm."' WHERE `idx_penelitian` = '".$idx."'";
+  $query_verif = "INSERT INTO bukti_verif(file_verif, idx_pengajuan_penelitian) VALUES('$webcame_name', '$idx')";
+  
+  $result = mysqli_query($server1, $query_pdf);
+  $result_verif = mysqli_query($server1, $query_verif);
+  
+  // Check the results and output success or error messages
+  if ($result &&  $result_verif) {
+    header('location:../../view.php?menu=penelitian&act=usulan_baru_langkah_empat&idx=' . $_POST['idx'] . '&status=berhasil_capture');
+  } else {
+    echo "Error inserting data " . mysqli_error($server1);
   }
 
-  // Check if the form was submitted
-  if (isset($_POST['submit_button'])) {
-    
-    $nip = $_SESSION['nik_user']; // User's NIP
-
-    // Determine which column to insert into based on NIP
-    if ($nip == '41277006052') {
-        $column = 'tanda_tangan_pengaju';
-    } elseif ($nip == '41277006134') {
-        $column = 'tanda_tangan_dekan';
-    } else {
-        $column = ''; // Handle other cases as necessary
-    }
-
-    // If we have a valid column, proceed with the query
-    if (!empty($column)) {
-        $query = "INSERT INTO pengajuan_penelitian WHERE ($column) VALUES('$pdf_nm')";
-        $query_verif = "INSERT INTO bukti_verif(file_verif) VALUES('$webcame_name')";
-
-        // Run the queries
-        $result = mysqli_query($server1, $query);
-        $result_verif = mysqli_query($server1, $query_verif);
-
-        // Check the results and output success or error messages
-        if ($result) {
-            echo "Data inserted successfully for $column.";
-        } else {
-            echo "Error inserting tanda_tangan: " . mysqli_error($server1);
-        }
-
-        if ($result_verif) {
-            echo "Verification data inserted successfully.";
-        } else {
-            echo "Error inserting bukti_verif: " . mysqli_error($server1);
-        }
-    } else {
-        echo "Invalid user NIP.";
-    }
 }
-
-
-  // $result = mysqli_query($server1,"insert into tanda_tangan_penelitian(tanda_tangan_pengaju) values('$pdfUrl1')");
-  // Display success messages
-  // echo "PDF with webcam image saved successfully!<br>";
-  // echo "<a href='" . $pdfName1 . "'>Download PDF with Webcam Image</a><br>";
-
-  // echo "PDF with uploaded image saved successfully!<br>";
-  // echo "<a href='" . $pdfName2 . "'>Download PDF with Uploaded Image</a><br>";
-
-  // echo "
-  //   <script>
-  //       var idx = '{$_POST['idx']}'; // Mengambil idx dari POST
-  //       var pdfUrl = '{$pdfUrl1}';
-  //       var form = document.createElement('form');
-  //       form.method = 'POST';
-  //       form.action = 'path_to_file1.php'; 
-
-  //       // Menambahkan input tersembunyi untuk idx dan file URL
-  //       var idxInput = document.createElement('input');
-  //       idxInput.type = 'hidden';
-  //       idxInput.name = 'idx';
-  //       idxInput.value = idx;
-  //       form.appendChild(idxInput);
-
-  //       var fileInput = document.createElement('input');
-  //       fileInput.type = 'hidden';
-  //       fileInput.name = 'file';
-  //       fileInput.value = pdfUrl;
-  //       form.appendChild(fileInput);
-
-  //       document.body.appendChild(form);
-  //       form.submit();
-  //   </script>
-// ";
-}
-?>
