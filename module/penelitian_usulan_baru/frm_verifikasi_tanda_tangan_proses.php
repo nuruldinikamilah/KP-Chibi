@@ -3,18 +3,10 @@ require  __DIR__  . '/vendor/phpqrcode/qrlib.php'; // Include PHP QR Code librar
 require  __DIR__  . '/vendor/setasign/fpdf/fpdf.php'; // Include FPDF library
 require  __DIR__  . '/vendor/setasign/fpdi/src/autoload.php'; // Include FPDI for importing existing PDF
 include "../../config/koneksi.php";
-include "../../lib/enkripsi_decrpt.php";
-
 session_start();
 
 use setasign\Fpdi\Fpdi; // Use FPDI for PDF manipulation
-// if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-//   // Debugging input
-//   // echo "<pre>";
-//   // print_r($_POST);
-//   // echo "</pre>";
-//   // exit; // Hentikan eksekusi untuk memastikan data diterima dengan benar
-// }
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -63,20 +55,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $pdf2->SetAutoPageBreak(false);  // Disable automatic page breaks
   $pdf2->SetMargins(0, 0, 0);  // Disable margins to match Fabric.js
   // Load the uploaded PDF and use it as the background
+
   if (isset($_FILES['pdf_file']) && $_FILES['pdf_file']['error'] == UPLOAD_ERR_OK) {
     $pdfPath = $_FILES['pdf_file']['tmp_name'];
     $pageCount = $pdf2->setSourceFile($pdfPath);
     $templateId = $pdf2->importPage(1);
     $pdf2->useTemplate($templateId, 0, 0, 210, 297); // Adjust width and height for A4 size
-  } else {
+  } else { // Other users
     die("Error uploading PDF.");
   }
 
   // Convert pixels to centimeters for PDF
-  $positionX_cm = ($positionX / 96 * 25.4) * 1.28;
-  $positionY_cm = ($positionY / 96 * 25.4) * 1.28;
-  $imageWidth_cm = ($imageWidth / 96 * 25.4) * 1.28;
-  $imageHeight_cm = ($imageHeight / 96 * 25.4) * 1.28;
+  $positionX_cm = ($positionX / 96 * 25.4)*1.28;
+  $positionY_cm = ($positionY / 96 * 25.4)*1.28;
+  $imageWidth_cm = ($imageWidth / 96 * 25.4)*1.28;
+  $imageHeight_cm = ($imageHeight / 96 * 25.4)*1.28;
 
 
   // Add the uploaded image to the PDF based on the user-defined position and size
@@ -104,32 +97,56 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $qrCodePath = '../../dokumen_bukti_verifikasi/qr_code/qr_code_' . time() . '.png';
   $pdfUrl = 'http://localhost/Kerja%20Praktek/KP-Chibi/dokumen_bukti_verifikasi/pdf/' . $webcame_name; // Change to the actual URL or path where the image will be hosted
   QRcode::png($pdfUrl, $qrCodePath);
-  if ($_SESSION['nik_user'] == '41277006052') {
-    $pdf3->Image($qrCodePath, 420 / 3.78, 625 / 3.78, 50 / 3.78, 50 / 3.78);
-  } elseif ($_SESSION['nik_user'] == '41277006134') {
+  
+  if ($_SESSION['nik_user'] == '41277006134') { // Pa han han
     $pdf3->Image($qrCodePath, 100 / 3.78, 625 / 3.78, 50 / 3.78, 50 / 3.78);
+  } else {
+    $pdf3->Image($qrCodePath, 420 / 3.78, 625 / 3.78, 50 / 3.78, 50 / 3.78);
   }
 
   $pdf3->Output('F', $pdfName2);
 
-  $baseUrl = 'http://' . $_SERVER['HTTP_HOST'] . '/kp-chibi/';
-  $pdfUrl1 = $baseUrl . 'dokumen_bukti_verifikasi/pdf/' . basename($pdfName1);
-  $pdfUrl2 = $baseUrl . 'dokumen_bukti_verifikasi/pdf/' . basename($pdfName2);
+  $pdfUrl1 = 'dokumen_bukti_verifikasi/pdf/' . basename($pdfName1);
+  $pdfUrl2 = 'dokumen_bukti_verifikasi/pdf/' . basename($pdfName2);
 
-  $idx=my_simple_crypt($_POST['idx'], 'd' );
+  // if($pdfName1 && $pdfName2){
+  //   header('location:../../view.php?menu=penelitian&act=usulan_baru_langkah_empat&idx='.$idx.'&file1='.urlencode($pdfUrl1).'&file2='.urlencode($pdfUrl2).'&status=berhasil_capture');
+  // }
 
-  // If we have a valid column, proceed with the query
-  $query_pdf = "UPDATE `pengajuan_penelitian` SET `dokumen_lembar_pengesahan` = '".$pdf_nm."' WHERE `idx_penelitian` = '".$idx."'";
-  $query_verif = "INSERT INTO bukti_verif(file_verif, idx_pengajuan_penelitian) VALUES('$webcame_name', '$idx')";
-  
-  $result = mysqli_query($server1, $query_pdf);
-  $result_verif = mysqli_query($server1, $query_verif);
-  
-  // Check the results and output success or error messages
-  if ($result &&  $result_verif) {
-    header('location:../../view.php?menu=penelitian&act=usulan_baru_langkah_empat&idx=' . $_POST['idx'] . '&status=berhasil_capture');
-  } else {
-    echo "Error inserting data " . mysqli_error($server1);
+  // Check if the form was submitted
+  if (isset($_POST['submit_button'])) {
+    
+    $nip = $_SESSION['nik_user']; // User's NIP
+
+    // Determine which column to insert into based on NIP
+    } if ($nip == '41277006134') { // Pa han han
+        $column = 'tanda_tangan_dekan';
+    } else {
+        $column = ''; // Handle other cases as necessary
+    }
   }
+    // If we have a valid column, proceed with the query
+    if (!empty($column)) {
+        $query = "INSERT INTO tanda_tangan_penelitian($column) VALUES('$pdf_nm')";
+        $query_verif = "INSERT INTO bukti_verif(file_verif) VALUES('$webcame_name')";
 
-}
+        // Run the queries
+        $result = mysqli_query($server1, $query);
+        $result_verif = mysqli_query($server1, $query_verif);
+
+        // Check the results and output success or error messages
+        if ($result) {
+            echo "Data inserted successfully for $column.";
+        } else {
+            echo "Error inserting tanda_tangan: " . mysqli_error($server1);
+        }
+
+        if ($result_verif) {
+            echo "Verification data inserted successfully.";
+        } else {
+            echo "Error inserting bukti_verif: " . mysqli_error($server1);
+        }
+    } else {
+        echo "Invalid user NIP.";
+    }
+?>

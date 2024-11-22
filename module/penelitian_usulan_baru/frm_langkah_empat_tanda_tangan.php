@@ -149,7 +149,9 @@
     var canvas = new fabric.Canvas('editCanvas');
 
     function fitImageIntoCanvas(imgElement) {
-      fabric.Image.fromURL(imgElement.src, function (img) {
+      // Create a Fabric image from the uploaded image element
+      fabric.Image.fromURL(imgElement.src, function(img) {
+        // Get canvas dimensions
         var canvasWidth = canvas.width;
         var canvasHeight = canvas.height;
 
@@ -197,10 +199,10 @@
               imgElement.onload = function () {
                 var imgInstance = new fabric.Image(
                   fitImageIntoCanvas(imgElement), {
-                  left: 0,
-                  top: 0,
-                  selectable: false
-                });
+                    left: 0,
+                    top: 0,
+                    selectable: false
+                  });
                 canvas.add(imgInstance);
                 canvas.renderAll();
               };
