@@ -1,34 +1,67 @@
 <head>
   <title>PDF with Image Editing</title>
   <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f6f9; 
+      color: #333; 
+    }
+
     .form-group label {
       display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #555;
     }
+
     .form-group input[type="file"] {
+      display: block;
       width: 100%;
-      padding: 5px;
-      border: solid 1px black;
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #ffffff;
+      color: #333;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
     }
+
     .btn-action button {
       border-radius: 5px;
-      padding: 10px;
+      padding: 12px 15px;
+      font-size: 14px;
+      font-weight: 600;
       border: none;
       cursor: pointer;
-      margin-bottom: 10px
+      background-color: #007bff; 
+      color: #ffffff;
+      transition: background-color 0.3s ease, transform 0.2s ease;
     }
+
+    .btn-action button:hover {
+      background-color: #0056b3;
+      transform: scale(1.02);
+    }
+
     canvas {
-      border-radius: 8px;
-      border: solid 1px black;
+      border-radius: 10px;
+      border: 2px solid #ddd;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
+
     video {
-      border-radius: 8px;
-      width: 40%;
+      border-radius: 10px;
+      width: 80%; 
       height: auto;
-      margin:auto;
+      margin: auto;
       margin-bottom: 10px;
+      display: block;
+      border: 2px solid #ddd;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
+
   </style>
 </head>
 
@@ -41,7 +74,7 @@
         <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
         <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
       </div>
-      <h4 class="panel-title">Tambah File dan Tanda Tangan <?php echo date("Y"); ?></h4>
+      <h4 class="panel-title">Verifikasi dan Tambah File <?php echo date("Y"); ?></h4>
     </div>
 
     <br>
@@ -49,13 +82,10 @@
     <div class="container">
       <div style="display: flex; gap: 20px;">
         <div>
-          <canvas id="editCanvas" class="border" width="600" height="900"></canvas>
-        </div>
-        <div>
           <div style="display: flex; justify-content: center; flex-direction: column;">
             <video id="video" autoplay></video>
-            <form  action="module/penelitian_usulan_baru/frm_langkah_empat_tanda_tangan_proses.php" method="POST" enctype="multipart/form-data" id="pdfForm">
-              <input type='hidden' name='idx' value='<?php echo $_GET['idx'];?>'>
+            <form action="module/penelitian_usulan_baru/frm_langkah_empat_tanda_tangan_proses.php" method="POST" enctype="multipart/form-data" id="pdfForm">
+              <input type='hidden' name='idx' value='<?php echo $_GET['idx']; ?>'>
               <div class="form-group">
                 <label for="pdfUpload">Tambah File:</label>
                 <input type="file" name="pdf_file" id="pdfUpload" accept="application/pdf" required>
@@ -68,27 +98,27 @@
               <input type="hidden" name="imageHeight" id="imageHeight">
               <div class="btn-action" style="display: flex; flex-direction: column; gap: 10px;">
                 <button id="capture" type="submit" name="submit_button" class="btn btn-primary">Simpan</button>
-                <!-- <button type="button" id="deleteImage" class="btn btn-danger">Delete Signature</button> -->
               </div>
-              <a href="" target="_blank"></a>
-              <div>
+              <div class="download-links">
                 <?php
-                  if(isset($_GET['file1'])) 
-                  {
+                  if (isset($_GET['file1'])) {
                     $pdfName1 = $_GET['file1'];
                     $pdfName2 = $_GET['file2'];
-                    echo "<a href='" . $pdfName1 . "' target='_blank'>Download PDF with Webcam Image</a><br>";
-                    echo "<a href='" . $pdfName2 . "'target='_blank'>Download PDF with Uploaded Image</a><br>";
+                    echo "<a href='" . $pdfName1 . "' target='_blank'>Download PDF with Webcam Image</a>";
+                    echo "<a href='" . $pdfName2 . "' target='_blank'>Download PDF with Uploaded Image</a>";
                   }
                 ?>
               </div>
             </form>
           </div>
         </div>
+
+        <div>
+          <canvas id="editCanvas" class="border" width="600" height="900"></canvas>
+        </div>
       </div>
     </div>
   </div>
-
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.5.207/pdf.min.js"></script>
@@ -97,14 +127,14 @@
     navigator.mediaDevices.getUserMedia({
         video: true
       })
-      .then(function(stream) {
+      .then(function (stream) {
         video.srcObject = stream;
       })
-      .catch(function(err) {
+      .catch(function (err) {
         alert("Error accessing camera: " + err);
       });
 
-    document.getElementById('capture').addEventListener('click', function() {
+    document.getElementById('capture').addEventListener('click', function () {
       var canvas = document.createElement('canvas');
       canvas.width = 640;
       canvas.height = 480;
@@ -113,54 +143,44 @@
       var imageData = canvas.toDataURL('image/png');
       document.getElementById('imageData').value = imageData;
       document.getElementById('dateData').value = new Date().toLocaleString();
-
       document.getElementById('pdfForm').submit();
     });
 
     var canvas = new fabric.Canvas('editCanvas');
 
-    // Function to fit the uploaded image into the canvas
     function fitImageIntoCanvas(imgElement) {
-      // Create a Fabric image from the uploaded image element
       fabric.Image.fromURL(imgElement.src, function (img) {
-        // Get canvas dimensions
         var canvasWidth = canvas.width;
         var canvasHeight = canvas.height;
 
-        // Get image dimensions
         var imgWidth = img.width;
         var imgHeight = img.height;
 
-        // Calculate scale factors for width and height
         var scaleWidth = canvasWidth / imgWidth;
         var scaleHeight = canvasHeight / imgHeight;
 
-        // Choose the smaller scale factor to fit the image
         var scaleFactor = Math.min(scaleWidth, scaleHeight);
 
-        // Scale the image proportionally
         img.scale(scaleFactor);
 
-        // Center the image on the canvas
         img.set({
           left: (canvasWidth - img.getScaledWidth()) / 2,
           top: (canvasHeight - img.getScaledHeight()) / 2,
-          selectable: false,  
-          evented: false      
+          selectable: false,
+          evented: false
         });
 
-        // Add the image to the canvas
         canvas.add(img);
       });
     }
-    
-    document.getElementById('pdfUpload').addEventListener('change', function(e) {
+
+    document.getElementById('pdfUpload').addEventListener('change', function (e) {
       var file = e.target.files[0];
       var reader = new FileReader();
-      reader.onload = function() {
+      reader.onload = function () {
         var typedArray = new Uint8Array(this.result);
-        pdfjsLib.getDocument(typedArray).promise.then(function(pdf) {
-          pdf.getPage(1).then(function(page) {
+        pdfjsLib.getDocument(typedArray).promise.then(function (pdf) {
+          pdf.getPage(1).then(function (page) {
             var viewport = page.getViewport({
               scale: 1.33
             });
@@ -171,10 +191,10 @@
             page.render({
               canvasContext: pdfContext,
               viewport: viewport
-            }).promise.then(function() {
+            }).promise.then(function () {
               var imgElement = new Image();
               imgElement.src = pdfCanvas.toDataURL();
-              imgElement.onload = function() {
+              imgElement.onload = function () {
                 var imgInstance = new fabric.Image(
                   fitImageIntoCanvas(imgElement), {
                   left: 0,
@@ -190,67 +210,5 @@
       };
       reader.readAsArrayBuffer(file);
     });
-
-    document.getElementById('imageUpload').addEventListener('change', function(e) {
-      var file = e.target.files[0];
-      var reader = new FileReader();
-      reader.onload = function() {
-        var imgElement = new Image();
-        imgElement.src = this.result;
-        imgElement.onload = function() {
-          var imgInstance = new fabric.Image(imgElement, {
-            left: 50,
-            top: 50,
-            scaleX: 0.4,
-            scaleY: 0.4,
-            hasControls: true,  // Show resize/scale handles
-            lockRotation: true, // Prevent rotation if needed
-            cornerSize: 10,     // Size of control corners
-            transparentCorners: false, // Visible corner controls
-          });
-          canvas.add(imgInstance);
-          canvas.renderAll();
-
-          // Dynamically log position and size changes
-          function updateImageData() {
-            var positionX = imgInstance.left;
-            var positionY = imgInstance.top;
-            var imageWidth = imgInstance.width * imgInstance.scaleX;
-            var imageHeight = imgInstance.height * imgInstance.scaleY;
-
-            console.log('Position X:', positionX);
-            console.log('Position Y:', positionY);
-            console.log('Image Width:', imageWidth);
-            console.log('Image Height:', imageHeight);
-
-            // Update hidden fields
-            document.getElementById('positionX').value = positionX;
-            document.getElementById('positionY').value = positionY;
-            document.getElementById('imageWidth').value = imageWidth;
-            document.getElementById('imageHeight').value = imageHeight;
-          }
-
-          // Listen to image move/scale events and log updated values
-          imgInstance.on('moving', updateImageData);
-          imgInstance.on('scaling', updateImageData);
-          imgInstance.on('scaled', updateImageData); // Ensure scaling updates are logged
-
-          // Initial log
-          updateImageData();
-        };
-      };
-      reader.readAsDataURL(file);
-    });
-
-    document.getElementById('deleteImage').addEventListener('click', function() {
-      // Hapus data gambar dari input tersembunyi
-      document.getElementById('imageData').value = '';
-
-      // Jika ada gambar yang ditampilkan di canvas, hapus gambar tersebut
-      canvas.remove(canvas.getActiveObject());
-
-      alert("Are you sure you want to delete the image?");
-    });
   </script>
-
 </body>
