@@ -311,8 +311,11 @@ if (isset($_GET['status'])) {
             <div class="p-10">
                 <div style="display: flex; gap: 20px; flex-direction: column;">
                     <div style="display: flex; justify-content: center; flex-direction: column;">
-                        <video id="video" autoplay></video>
+                        <video id="video" autoplay style="width: 210px; height: 160px; border: 1px solid #ccc; border-radius: 8px;"></video>
+
+                        <div style="display: flex; justify-content:center; flex-direction: column; align-items: center; gap: 20px;">
                         <canvas id="editCanvas" class="border" width="400" height="600"></canvas>
+                        <div>
                     </div>
                     <div>
                         <div style="display: flex; justify-content: center;">
@@ -432,7 +435,7 @@ if (isset($_GET['status'])) {
         fileInputModal.files = dataTransfer.files;
 
         var_div_ttd = document.getElementById('div-tanda-tangan');
-        var_div_ttd.innerHTML = "<button type='button' onclick='handleClick()'>Tanda Tangan</button>";
+        var_div_ttd.innerHTML = "<button type='button' onclick='handleClick()'>Verifikasi</button>";
 
         var reader = new FileReader();
         reader.onload = function() {
