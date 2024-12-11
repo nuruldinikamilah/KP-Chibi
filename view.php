@@ -3660,6 +3660,13 @@ if (($_SESSION['nik_user'] == '') && ($_SESSION['pass_user'] == '')) {
 
 
 		function validasi_frm_dokumen_proposal() {
+			// if (isset($_GET['idx'])) {
+			// 	$idx = my_simple_crypt($_GET['idx'], 'd');
+			// 	$sql = mysqli_query($server1, "select * from pengajuan_penelitian where idx_penelitian=".$idx);
+			// 	$sql2 = mysqli_query($server1, "select * from bukti_verif where idx_pengajuan_penelitian=".$idx);
+			// 	$r = mysqli_fetch_array($sql);
+			// 	$bv = mysqli_fetch_array($sql2);
+			// }
 			if ($('#file_dokumen').val() == "") {
 
 
@@ -3673,10 +3680,8 @@ if (($_SESSION['nik_user'] == '') && ($_SESSION['pass_user'] == '')) {
 					backgroundColor: "#FFFFFF"
 				}, 10000);
 				return false;
-			} 
-			// else if ($('#file_dokumen_lembar_pengesahan').val() == "") {
-
-
+			}
+			// else if ($r['dokumen_lembar_pengesahan'] != '' && $bv['file_verif'] != '') {
 			// 	$('#modal-dialog-file-lp-kosong').modal('show');
 			// 	//$('#tdstatuspeneliti').addClass("danger");
 			// 	$('#file_dokumen_lembar_pengesahan').focus();
@@ -3687,19 +3692,19 @@ if (($_SESSION['nik_user'] == '') && ($_SESSION['pass_user'] == '')) {
 			// 		backgroundColor: "#FFFFFF"
 			// 	}, 10000);
 			// 	return false;
-			// }
-
-			/*else if ($('#file_dokumen_mitra_abdi').val()=="")
-		{
-
-            
-			$('#modal-dialog-file-mitra-abdi-kosong').modal('show');
-			//$('#tdstatuspeneliti').addClass("danger");
-			$('#file_dokumen_mitra_abdi').focus();
-			$('#t_dokumen_file_mitra_abdi').animate({backgroundColor: "#33AAFF" },1000);
-	   		$('#t_dokumen_file_mitra_abdi').animate({backgroundColor: "#FFFFFF" },10000);
-			return false;	
-		}*/
+			// } 
+			else if ($('#file_dokumen_mitra_abdi').val() == "") {
+				$('#modal-dialog-file-mitra-abdi-kosong').modal('show');
+				//$('#tdstatuspeneliti').addClass("danger");
+				$('#file_dokumen_mitra_abdi').focus();
+				$('#t_dokumen_file_mitra_abdi').animate({
+					backgroundColor: "#33AAFF"
+				}, 1000);
+				$('#t_dokumen_file_mitra_abdi').animate({
+					backgroundColor: "#FFFFFF"
+				}, 10000);
+				return false;
+			}
 		}
 
 
