@@ -1,0 +1,6 @@
+[11-Oct-2022 18:59:06 Asia/Jakarta] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, boolean given in /home/dp3m/public_html/pengajuan/module/pengajuan/get_data_koreksi_reviewer.php on line 92
+[11-Oct-2022 18:59:06 Asia/Jakarta] PHP Warning:  mysqli_fetch_array() expects parameter 1 to be mysqli_result, boolean given in /home/dp3m/public_html/pengajuan/module/pengajuan/get_data_koreksi_reviewer.php on line 95
+[11-Oct-2022 18:59:33 Asia/Jakarta] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, boolean given in /home/dp3m/public_html/pengajuan/module/pengajuan/get_data_koreksi_reviewer.php on line 92
+[11-Oct-2022 18:59:33 Asia/Jakarta] PHP Warning:  mysqli_fetch_array() expects parameter 1 to be mysqli_result, boolean given in /home/dp3m/public_html/pengajuan/module/pengajuan/get_data_koreksi_reviewer.php on line 95
+[13-Oct-2022 04:55:24 UTC] PHP Fatal error:  Call to undefined function year() in /home/dp3m/public_html/pengajuan/module/pengajuan/get_data_koreksi_reviewer.php on line 308
+[13-Oct-2022 04:56:24 UTC] PHP Fatal error:  Call to undefined function year() in /home/dp3m/public_html/pengajuan/module/pengajuan/get_data_koreksi_reviewer.php on line 309
