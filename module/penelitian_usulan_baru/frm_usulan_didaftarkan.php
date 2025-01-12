@@ -86,7 +86,7 @@ if(isset($_GET['status']))
           
                 <table id="tabel_distribusi" class="table table-striped table-bordered">
                     <thead>
-                    <tr><th>&nbsp;</th><th width="8%">Tahun Pengajuan</th><th width="15%">Judul</th><th>Personil Penelitian</th><th>Penelitian</th><th>Dana</th><th>File Proposal</th><th>Status Proposal</th><th>Catatan Reviewer</th></tr>
+                    <tr><th>&nbsp;</th><th width="8%">Tahun Pengajuan</th><th width="15%">Judul</th><th>Personil Penelitian</th><th>Penelitian</th><th>Dana</th><th>File Proposal</th><th>Status Proposal</th><th>Catatan Reviewer</th><th>Verifikasi Kaprodi</th><th>Verifikasi Dekan</th></tr>
                     </thead>
                     <tbody>
                          <?php
@@ -142,7 +142,27 @@ if(isset($_GET['status']))
                           <td> 
                             <a href="<?php echo "view.php?menu=penelitian&act=usulan_baru_langkah_satu&idx=".$idx_enc;?>" class="btn btn-primary btn-sm m-r-5"><i class="fa fa-edit"></i>&nbsp;Ubah
                               </a>
-
+                            <?php
+                            if (isset($_SESSION['nik_user']) && $_SESSION['nik_user'] == '41277006052') {
+                              $query = "SELECT * FROM pengajuan_penelitian LEFT JOIN tanda_tangan_penelitian ON pengajuan_penelitian.idx_penelitian = tanda_tangan_penelitian.idx_penelitian";
+                            } else if (isset($_SESSION['nik_user']) && ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '412770002')) {
+                                $query = "SELECT * FROM pengajuan_penelitian LEFT JOIN tanda_tangan_penelitian ON pengajuan_penelitian.idx_penelitian = tanda_tangan_penelitian.idx_penelitian";
+                            }
+                            
+                            // Execute the query
+                            $sql = mysqli_query($server1, $query);
+                            $index = 1;
+                            while ($row = mysqli_fetch_array($sql)) {
+                                $file_path = "dokumen_bukti_verifikasi/pdf/" . $row['dokumen_lembar_pengesahan'];
+                                $kaprodi_signature = is_null($row['tanda_tangan_kaprodi']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
+                                $dekan_signature = is_null($row['tanda_tangan_dekan']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
+  
+                                $button_label = 'Download';
+                                $button_class = ($kaprodi_signature === 'Telah Diverifikasi' && $dekan_signature === 'Telah Diverifikasi') ? 'button' : 'button disabled';
+                                $button_action = ($kaprodi_signature === 'Telah Diverifikasi' && $dekan_signature === 'Telah Diverifikasi') ? "href='$file_path'" : '';
+                                ?>
+                                <a class="btn btn-primary btn-sm m-r-5" <?php echo $button_action; ?>><?php echo $button_label; ?></a>
+                            <?php } ?>
 
                               <?php
                                 //cek jika sudah divalidasi
@@ -278,10 +298,28 @@ if(isset($_GET['status']))
                                 }
                             ?>
                           </td>
-
-
+                          <?php
+                          if (isset($_SESSION['nik_user']) && $_SESSION['nik_user'] == '41277006052') {
+                            $query = "SELECT * FROM pengajuan_penelitian LEFT JOIN tanda_tangan_penelitian ON pengajuan_penelitian.idx_penelitian = tanda_tangan_penelitian.idx_penelitian";
+                          } else if (isset($_SESSION['nik_user']) && ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '412770002')) {
+                              $query = "SELECT * FROM pengajuan_penelitian LEFT JOIN tanda_tangan_penelitian ON pengajuan_penelitian.idx_penelitian = tanda_tangan_penelitian.idx_penelitian";
+                          }
                           
-                            
+                          // Execute the query
+                          $sql = mysqli_query($server1, $query);
+                          $index = 1;
+                          while ($row = mysqli_fetch_array($sql)) {
+                              $file_path = "dokumen_bukti_verifikasi/pdf/" . $row['dokumen_lembar_pengesahan'];
+                              $kaprodi_signature = is_null($row['tanda_tangan_kaprodi']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
+                              $dekan_signature = is_null($row['tanda_tangan_dekan']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
+
+                              $button_label = 'Download';
+                              $button_class = ($kaprodi_signature === 'Telah Diverifikasi' && $dekan_signature === 'Telah Diverifikasi') ? 'button' : 'button disabled';
+                              $button_action = ($kaprodi_signature === 'Telah Diverifikasi' && $dekan_signature === 'Telah Diverifikasi') ? "href='$file_path'" : '';
+                              ?>
+                                  <td><?php echo $kaprodi_signature; ?></td>
+                                  <td><?php echo $dekan_signature; ?></td>
+                          <?php } ?>
                           </tr>
                         <?php
                         $no++;

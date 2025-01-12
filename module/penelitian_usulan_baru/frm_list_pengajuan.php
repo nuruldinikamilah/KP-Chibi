@@ -86,13 +86,15 @@ if ($sql) {
 
 <?php
 if ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '412770002') { ?>
-    <h2>Pending Approvals</h2>
+    <h2>Antrian Verifikasi</h2>
     <table>
         <tr>
             <th>No</th>
             <th>Judul</th>
             <th>Kaprodi</th>
             <th>Dekan</th>
+            <th>Lihat Proposal</th>
+            <th>Lihat Pengesahan</th>
             <th></th>
         </tr>
         <?php
@@ -100,33 +102,39 @@ if ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '41277000
         while ($row = mysqli_fetch_array($sql)) {
             if ($_SESSION['nik_user'] == '41277006134' && is_null($row['tanda_tangan_kaprodi'])) {
                 // For NIK 41277006134: Only show if tanda_tangan_kaprodi is NULL
-                $kaprodi_signature = '<span class="cross-icon">&#10060;</span>';
-                $dekan_signature = is_null($row['tanda_tangan_dekan']) ? '<span class="cross-icon">&#10060;</span>' : '<span class="check-icon">&#10003;</span>';
+                $kaprodi_signature = 'Belum Diverifikasi';
+                $dekan_signature = is_null($row['tanda_tangan_dekan']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
                 ?>
                 <tr>
                     <td><?php echo $index++; ?></td>
                     <td><?php echo $row['judul_penelitian']; ?> </td>
                     <td><?php echo $kaprodi_signature; ?></td>
                     <td><?php echo $dekan_signature; ?></td>
-                    <td><a class='button' href='view.php?menu=penelitian&act=verifikasi_tanda_tangan&file=<?php echo $row['dokumen_lembar_pengesahan']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Verifikasi</a></td>
+                    <td><a class='button' href='view.php?menu=penelitian&act=lihat_dokumen&file=<?php echo $row['cover_dokumen']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Lihat Dokumen</a>
+                    <td><a class='button' href='view.php?menu=penelitian&act=lihat_dokumen&file=<?php echo $row['dokumen_lembar_pengesahan']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Lihat Dokumen</a>
+                    <td><a class='button' href='view.php?menu=penelitian&act=verifikasi_tanda_tangan&file=<?php echo $row['dokumen_lembar_pengesahan']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Verifikasi</a>
+                    <a class='button' href='view.php?menu=penelitian&act=verifikasi_tanda_tangan&file=<?php echo $row['dokumen_lembar_pengesahan']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Tidak Verifikasi</a></td>
                 </tr>
             <?php } elseif ($_SESSION['nik_user'] == '412770002' && is_null($row['tanda_tangan_dekan'])) {
                 // For NIK 412770002: Only show if tanda_tangan_dekan is not NULL
-                $kaprodi_signature = is_null($row['tanda_tangan_kaprodi']) ? '<span class="cross-icon">&#10060;</span>' : '<span class="check-icon">&#10003;</span>';
-                $dekan_signature = '<span class="cross-icon">&#10060;</span>' ;
+                $kaprodi_signature = is_null($row['tanda_tangan_kaprodi']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
+                $dekan_signature = 'Belum Diverifikasi' ;
                 ?>
                 <tr>
                     <td><?php echo $index++; ?></td>
                     <td><?php echo $row['judul_penelitian']; ?> </td>
                     <td><?php echo $kaprodi_signature; ?></td>
                     <td><?php echo $dekan_signature; ?></td>
-                    <td><a class='button' href='view.php?menu=penelitian&act=verifikasi_tanda_tangan&file=<?php echo $row['dokumen_lembar_pengesahan']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Verifikasi</a></td>
+                    <td><a class='button' href='view.php?menu=penelitian&act=lihat_dokumen&file=<?php echo $row['cover_dokumen']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Lihat Dokumen</a>
+                    <td><a class='button' href='view.php?menu=penelitian&act=lihat_dokumen&file=<?php echo $row['dokumen_lembar_pengesahan']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Lihat Dokumen</a>
+                    <td><a class='button' href='view.php?menu=penelitian&act=verifikasi_tanda_tangan&file=<?php echo $row['dokumen_lembar_pengesahan']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Verifikasi</a>
+                    <a class='button' href='view.php?menu=penelitian&act=verifikasi_tanda_tangan&file=<?php echo $row['dokumen_lembar_pengesahan']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Tidak Verifikasi</a></td>
                 </tr>
             <?php }
         } ?>
     </table>
 
-    <h2>History</h2>
+    <h2>Riwayat Verifikasi</h2>
     <table>
         <tr>
             <th>No</th>
@@ -134,6 +142,7 @@ if ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '41277000
             <th>Kaprodi</th>
             <th>Dekan</th>
             <th>Waktu Tanda Tangan</th>
+            <th>Lihat Pengesahan</th>
         </tr>
         <?php
         // Reset result pointer for history table
@@ -142,8 +151,8 @@ if ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '41277000
         while ($row = mysqli_fetch_array($sql)) {
             if ($_SESSION['nik_user'] == '41277006134' && !is_null($row['tanda_tangan_kaprodi'])) {
                 // For NIK 41277006134: Show in history if tanda_tangan_kaprodi is not NULL
-                $kaprodi_signature = '<span class="check-icon">&#10003;</span>';
-                $dekan_signature = is_null($row['tanda_tangan_dekan']) ? '<span class="cross-icon">&#10060;</span>' : '<span class="check-icon">&#10003;</span>';
+                $kaprodi_signature = 'Telah Diverifkasi';
+                $dekan_signature = is_null($row['tanda_tangan_dekan']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
                 ?>
                 <tr>
                     <td><?php echo $index++; ?></td>
@@ -151,11 +160,12 @@ if ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '41277000
                     <td><?php echo $kaprodi_signature; ?></td>
                     <td><?php echo $dekan_signature; ?></td>
                     <td><?php echo $row['waktu_tanda_tangan_kaprodi']; ?></td>
+                    <td><a class='button' href='view.php?menu=penelitian&act=lihat_dokumen&file=<?php echo $row['dokumen_lembar_pengesahan']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Lihat Dokumen</a>
                 </tr>
             <?php } elseif ($_SESSION['nik_user'] == '412770002' && !is_null($row['tanda_tangan_dekan'])) {
                 // For NIK 412770002: Show in history if tanda_tangan_dekan is not NULL
-                $kaprodi_signature = is_null($row['tanda_tangan_kaprodi']) ? '<span class="cross-icon">&#10060;</span>' : '<span class="check-icon">&#10003;</span>';
-                $dekan_signature = '<span class="check-icon">&#10003;</span>';
+                $kaprodi_signature = is_null($row['tanda_tangan_kaprodi']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
+                $dekan_signature = 'Telah Diverifikasi';
                 ?>
                 <tr>
                     <td><?php echo $index++; ?></td>
@@ -163,6 +173,7 @@ if ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '41277000
                     <td><?php echo $kaprodi_signature; ?></td>
                     <td><?php echo $dekan_signature; ?></td>
                     <td><?php echo $row['waktu_tanda_tangan_dekan']; ?></td>
+                    <td><a class='button' href='view.php?menu=penelitian&act=lihat_dokumen&file=<?php echo $row['dokumen_lembar_pengesahan']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Lihat Dokumen</a>
                 </tr>
             <?php }
         } ?>
@@ -181,12 +192,12 @@ if ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '41277000
         $index = 1;
         while ($row = mysqli_fetch_array($sql)) {
             $file_path = "dokumen_bukti_verifikasi/pdf/" . $row['dokumen_lembar_pengesahan'];
-            $kaprodi_signature = is_null($row['tanda_tangan_kaprodi']) ? '<span class="cross-icon">&#10060;</span>' : '<span class="check-icon">&#10003;</span>';
-            $dekan_signature = is_null($row['tanda_tangan_dekan']) ? '<span class="cross-icon">&#10060;</span>' : '<span class="check-icon">&#10003;</span>';
+            $kaprodi_signature = is_null($row['tanda_tangan_kaprodi']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
+            $dekan_signature = is_null($row['tanda_tangan_dekan']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
 
             $button_label = 'Download';
-            $button_class = ($kaprodi_signature === '<span class="check-icon">&#10003;</span>' && $dekan_signature === '<span class="check-icon">&#10003;</span>') ? 'button' : 'button disabled';
-            $button_action = ($kaprodi_signature === '<span class="check-icon">&#10003;</span>' && $dekan_signature === '<span class="check-icon">&#10003;</span>') ? "href='$file_path'" : '';
+            $button_class = ($kaprodi_signature === 'Telah Diverifikasi' && $dekan_signature === 'Telah Diverifikasi') ? 'button' : 'button disabled';
+            $button_action = ($kaprodi_signature === 'Telah Diverifikasi' && $dekan_signature === 'Telah Diverifikasi') ? "href='$file_path'" : '';
             ?>
             <tr>
                 <td><?php echo $index++; ?></td>

@@ -13,6 +13,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   // Get image data and date from form
   $imageData = $_POST['image'];
   $date = $_POST['date'];
+  $days = ['Sunday' => 'Minggu', 'Monday' => 'Senin', 'Tuesday' => 'Selasa', 'Wednesday' => 'Rabu', 'Thursday' => 'Kamis', 'Friday' => 'Jumat', 'Saturday' => 'Sabtu'];
+  $months = ['January' => 'Januari', 'February' => 'Februari', 'March' => 'Maret', 'April' => 'April', 'May' => 'Mei', 'June' => 'Juni', 'July' => 'Juli', 'August' => 'Agustus', 'September' => 'September', 'October' => 'Oktober', 'November' => 'November', 'December' => 'Desember'];
+  
+  $timestamp = strtotime($date);
+  $day = $days[date('l', $timestamp)];
+  $month = $months[date('F', $timestamp)];
+  $date = $day . ', ' . date('j', $timestamp) . ' ' . $month . ' ' . date('Y', $timestamp) . ' ' . date('H:i:s', $timestamp);
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Retrieve JavaScript values passed through the form
     $positionX = $_POST['positionX']; // X position
@@ -39,16 +46,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   // Create a new PDF document for the webcam image
   $pdf1 = new FPDF();
   $pdf1->AddPage();
-  $pdf1->Image($webcamImageName, 10, 30, 100, 75);
-  $pdf1->SetFont('Arial', 'B', 16); // Set font: Arial, Bold, 16pt
-  $pdf1->Text(10, 115, 'Tanggal Verifikasi: ' . $date);
-  if($_SESSION["nik_user"]=="41277006052"){
-      $pdf1->Text(10, 125, 'Oleh: Dosen');
-  }else if($_SESSION["nik_user"]=="41277006134"){
-      $pdf1->Text(10, 125, 'Oleh: Kaprodi');
-  }else if($_SESSION["nik_user"]=="412770002"){
-      $pdf1->Text(10, 125, 'Oleh: Dekan');
-  }
+  $pdf1->SetFont('Arial', 'B', 12); // Set font: Arial, Bold, 16pt
+  $pdf1->Text(10, 10, 'Nama Dokumen: ' . $_POST['judul_penelitian']);
+  $pdf1->Text(10, 20, 'Nama Verifikator: '. $_POST['nama_user']);
+  $pdf1->Text(10, 30, 'Tanggal Verifikasi: ' . $date);
+  if($_SESSION["role"]=="dosen"){
+      $pdf1->Text(10, 40, 'Diverifikasi Oleh: Dosen');
+    }else if($_SESSION["role"]=="kaprodi"){
+        $pdf1->Text(10, 40, 'Diverifikasi Oleh: Kaprodi');
+    }else if($_SESSION["role"]=="dekan"){
+        $pdf1->Text(10, 40, 'Diverifikasi Oleh: Dekan');
+    }
+    $pdf1->Text(10, 50, 'Bukti Verifikasi: ');
+    $pdf1->Image($webcamImageName, 10, 60, 100, 75);
 
   // Save the PDF for webcam image
   $webcame_name = 'Bukti_verifikasi_webcam_' . time() . '.pdf';
@@ -109,8 +119,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   
   if ($_SESSION['nik_user'] == '41277006134') { // Pa han han
     $pdf3->Image($qrCodePath, 100 / 3.78, 625 / 3.78, 50 / 3.78, 50 / 3.78);
+    $pdf3->SetFont('Times','',12);
+    $pdf3->Text(59 / 3.78, 690 / 3.78, $_SESSION['nama_user']);
+    $pdf3->Text(59 / 3.78, 709 / 3.78, $_SESSION['nik_user']);
   } else if($_SESSION['nik_user'] == '412770002'){ // Pak dekan
     $pdf3->Image($qrCodePath, 355 / 3.78, 855 / 3.78, 50 / 3.78, 50 / 3.78);
+    $pdf3->SetFont('Times','',12);
+    $pdf3->Text(278 / 3.78, 920 / 3.78, $_SESSION['nama_user']);
+    $pdf3->Text(278 / 3.78, 939 / 3.78, $_SESSION['nik_user']);
   }
   else if($_SESSION['nik_user'] == '41277006052'){
     $pdf3->Image($qrCodePath, 420 / 3.78, 625 / 3.78, 50 / 3.78, 50 / 3.78);
@@ -143,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   }
     // If we have a valid column, proceed with the query
     if (!empty($column)) {
-        $query = "UPDATE tanda_tangan_penelitian SET $column = '$pdf_nm', $time_col = NOW() WHERE idx_penelitian = '$idx'";
+        $query = "UPDATE tanda_tangan_penelitian SET $column = '$pdf_nm', $time_col = '$date' WHERE idx_penelitian = '$idx'";
         $query_update_penelitian = "UPDATE pengajuan_penelitian SET dokumen_lembar_pengesahan = '$pdf_nm' WHERE idx_penelitian = '$idx'";
         $query_verif = "INSERT INTO bukti_verifikasi(file_verif) VALUES('$webcame_name')";
 

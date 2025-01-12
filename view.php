@@ -487,12 +487,12 @@ if (($_SESSION['nik_user'] == '') && ($_SESSION['pass_user'] == '')) {
 									</span></a></font>
 							</li>
 
-							<li><a href="view.php?menu=penelitian&act=list_pengajuan"><span class='<?php if ($_GET['act'] == 'list_pengajuan') echo "blink"/*BLINK*/;
+							<!-- <li><a href="view.php?menu=penelitian&act=list_pengajuan"><span class='<?php if ($_GET['act'] == 'list_pengajuan') echo "blink"/*BLINK*/;
 																																											else echo ""/*Tidak Blink*/ ?>'>
 										<font color='<?php if ($_GET['act'] == 'list_pengajuan') echo "red"/*BLINK*/;
 																	else echo ""/*Tidak Blink*/ ?>'> List Pengajuan
 									</span></a></font>
-							</li>
+							</li> -->
 
 							</ul>
 

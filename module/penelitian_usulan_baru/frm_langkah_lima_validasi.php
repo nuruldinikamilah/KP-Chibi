@@ -168,7 +168,7 @@ if (isset($_GET['status'])) {
 					date_default_timezone_set('Asia/Jakarta');
 
 					$today = date("Y-m-d H:i:s");
-					$expire = "2024-12-20 23:59:00";
+					$expire = "2025-01-01 23:59:00";
 
 					$today_time = strtotime($today);
 					$expire_time = strtotime($expire);

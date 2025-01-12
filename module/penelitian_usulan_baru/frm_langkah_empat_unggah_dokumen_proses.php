@@ -17,6 +17,18 @@ if ($_SESSION['nik_user'] == '') {
 		header('location:../../view.php?menu=penelitian&act=usulan_baru_langkah_empat&idx=' . $_POST['idx'] . '&status=gagal&kode=' . "Dokumen belum di tanda tangani oleh verifikator");
 		return;
 	}
+
+	//cover
+	$ekstensi_diperbolehkan	= array('pdf');
+	$nama_cover = $_FILES['file_cover']['name'];
+	$x = explode('.', $nama_cover);
+	$ekstensi = strtolower(end($x));
+	$ukuran	= $_FILES['file_cover']['size'];
+	$file_tmp_cover = $_FILES['file_cover']['tmp_name'];
+	$dirUpload_cover = "../../cover_dokumen/";
+	$newfilename_cover = uniqid() . "-" . time() . "." . $ekstensi; // 5dab1961e93a7-1571494241
+	$filename_and_directory_cover = $dirUpload_cover . $newfilename_cover;
+
 	//proposal
 	$ekstensi_diperbolehkan	= array('pdf');
 	$nama = $_FILES['file']['name'];
@@ -66,6 +78,7 @@ if ($_SESSION['nik_user'] == '') {
 	{
 		//proses upload
 		move_uploaded_file($file_tmp, $dirUpload . $newfilename);
+		move_uploaded_file($file_tmp_cover, $dirUpload_cover . $newfilename_cover);
 		// move_uploaded_file($file_tmp_lp, $dirUpload_lp . $newfilename_lp);
 		move_uploaded_file($file_tmp_mitra, $dirUpload_mitra . $newfilename_mitra);
 
@@ -109,7 +122,7 @@ if ($_SESSION['nik_user'] == '') {
 			}
 			//tidak perlu insert karena hanya menggunakan 1 tabel
 			// $result = mysqli_query($server1, "UPDATE `pengajuan_penelitian` SET `dokumen_proposal` = '" . $newfilename . "',`dokumen_lembar_pengesahan` = '" . $newfilename_lp . "',`dokumen_lembar_mitra` = '" . $newfilename_mitra . "' WHERE `idx_penelitian` = '" . $id . "'");
-			$result = mysqli_query($server1, "UPDATE `pengajuan_penelitian` SET `dokumen_proposal` = '" . $newfilename . "',`dokumen_lembar_mitra` = '" . $newfilename_mitra . "' WHERE `idx_penelitian` = '" . $id . "'");
+			$result = mysqli_query($server1, "UPDATE `pengajuan_penelitian` SET `dokumen_proposal` = '" . $newfilename . "',`dokumen_lembar_mitra` = '" . $newfilename_mitra . "', `cover_dokumen` = '" . $newfilename_cover . "' WHERE `idx_penelitian` = '" . $id . "'");
 			if ($result) {
 				//REDIRECT
 				$results2 = mysqli_query($server1, "INSERT INTO tanda_tangan_penelitian(idx_penelitian,tanda_tangan_pengaju) VALUES('$id','$newfilename')");

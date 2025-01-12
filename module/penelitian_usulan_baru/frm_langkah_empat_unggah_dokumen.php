@@ -3,6 +3,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.5.207/pdf.min.js"></script>
 
 <?php
+include "config/koneksi.php";
 include "header_wizard.php";
 ?>
 
@@ -179,9 +180,9 @@ if (isset($_GET['status'])) {
                         <thead>
                         <tr id=t_dokumen_file_lp>
                                 <td class="text-left align-text-bottom col-md-2 align-middle" style="width: 40%">
-                                    <label for=""><b>Masukan File Dokumen Cover dan <br> Halaman pengesahan Yang Telah Ditandatangani
+                                    <label for=""><b>Masukan File Halaman pengesahan Yang Telah Ditandatangani
                                             <br>
-                                            <a href="<?php echo "module/penelitian_usulan_baru/lembar_pengesahan.php?idx=" . $_GET['idx']; ?>" download>Download Lembar Pengesahan</a>
+                                            <a href="<?php echo "module/penelitian_usulan_baru/lembar_pengesahan.php?idx=" . $_GET['idx']; ?>" id="dokumen_pengesahan_template"download>Download Lembar Pengesahan</a>
                                 </td>
                                 <td class="text-left align-text-bottom col-md-2" style="width: 60%;">
                                     <span class="btn btn-danger fileinput-button btn-xs m-r-5">
@@ -194,10 +195,10 @@ if (isset($_GET['status'])) {
                                             <input type="file" name="file_lp" id="file_dokumen_lembar_pengesahan" />
                                         ';
                                         } else {
-                                            echo "
+                                            echo '
                                             <span>Tambah File</span>
-                                            <input type='file' name='file_lp' id='file_dokumen_lembar_pengesahan' />
-                                            ";
+                                            <input type="file" name="file_lp" id="file_dokumen_lembar_pengesahan" />
+                                        ';
                                         }
                                         ?>
 
@@ -220,7 +221,7 @@ if (isset($_GET['status'])) {
 
                                         <div id="div-tanda-tangan"></div>
                                 </td>
-                            </tr>
+                            </tr>                            
                             <?php
                             if ($r['dokumen_lembar_pengesahan'] != '' && $bv['file_verif'] != '') {
                             ?>
@@ -237,6 +238,34 @@ if (isset($_GET['status'])) {
                             }
                             ?>
 
+                            <tr id=t_cover_dokumen>
+                                <td class="text-left align-text-bottom col-md-2 align-middle" style="width: 40%">
+                                    <label for=""><b>Masukan File Dokumen Cover</b></label>
+                                            <!-- <br><a href="https://dp3m.unikom.ac.id/pengajuan/view.php?menu=buku_panduan">Download Template Usulan File Penelitian Internal</b></label></a> -->
+                                </td>
+                                <td class="text-left align-text-bottom col-md-2" style="width: 60%;">
+                                    <span class="btn btn-danger fileinput-button btn-xs m-r-5">
+                                        <i class="fa fa-plus"></i>
+                                        <span><?php echo $kata; ?> File</span>
+                                        <input type="file" name="file_cover" id="file_cover_dokumen" accept="application/pdf" />
+                                    </span>
+                                    <label id="nama_upload_file_cover"></label>
+                                </td>
+                            </tr>
+                            <?php
+                            if ($r['cover_dokumen'] != '') {
+                            ?>
+                                <tr>
+                                    <td class="text-left align-text-bottom col-md-2 align-middle">
+                                    </td>
+                                    <td class="text-left align-text-bottom col-md-2 align-middle">
+                                        <br><a href="<?php echo "dokumen_upload/" . $r['cover_dokumen']; ?>" download>Download File Cover</a>
+
+                                    </td>
+                                </tr>
+                            <?php
+                            }
+                            ?>
 
                             <tr id=t_dokumen_file>
                                 <td class="text-left align-text-bottom col-md-2 align-middle" style="width: 40%">
@@ -341,8 +370,10 @@ if (isset($_GET['status'])) {
                             <div>
                                 <div style="display: flex; justify-content: center;">
                                     <form action="module/penelitian_usulan_baru/frm_langkah_empat_tanda_tangan_proses.php" method="POST" enctype="multipart/form-data" id="pdfForm">
-                                        <input type="file" class="hidden" name="pdf_file" id="file_dokumen_lp_modal" />
+                                        <input type="file" name="pdf_file" id="file_dokumen_lp_modal" style="display: none;" />
                                         <input type='hidden' name='idx' value='<?php echo $_GET['idx'] ?>'>
+                                        <input type="hidden" name="nama_user" value="<?php echo $_SESSION['nama_user']; ?>">
+                                        <input type="hidden" name="judul_penelitian" value="<?php echo $r['judul_penelitian']; ?>">
                                         <input type="hidden" name="image" id="imageData">
                                         <input type="hidden" name="date" id="dateData">
                                         <input type="hidden" name="positionX" id="positionX">
@@ -350,7 +381,7 @@ if (isset($_GET['status'])) {
                                         <input type="hidden" name="imageWidth" id="imageWidth">
                                         <input type="hidden" name="imageHeight" id="imageHeight">
                                         <div class="btn-action" style="display: flex; flex-direction: column; gap: 10px;">
-                                            <button id="capture" type="submit" name="submit_button" class="btn btn-primary">Simpan</button>
+                                            <button id="capture" type="submit" name="submit_button" class="btn btn-primary">Verifikasi Dokumen</button>
                                         </div>
                                         <div>
                                             <?php
@@ -381,6 +412,11 @@ if (isset($_GET['status'])) {
         </script>
 
         <script>
+            document.getElementById('file_cover_dokumen').addEventListener('change', function () {
+                const fileName = this.files[0]?.name || 'No file selected';
+                document.getElementById('nama_upload_file_cover').textContent = fileName;
+            });
+
             var video = document.getElementById('video');
             navigator.mediaDevices.getUserMedia({
                     video: true

@@ -88,7 +88,7 @@
               <input type='hidden' name='idx' value='<?php echo $_GET['idx']; ?>'>
               <div class="form-group">
                 <label for="pdfUpload">Tambah File:</label>
-                <input type="file" name="pdf_file" id="pdfUpload" accept="application/pdf" required>
+                <input type="file" class="hidden" name="pdf_file" id="pdfUpload" accept="application/pdf" required>
               </div>
               <input type="hidden" name="image" id="imageData">
               <input type="hidden" name="date" id="dateData">

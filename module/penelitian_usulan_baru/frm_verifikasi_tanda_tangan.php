@@ -56,7 +56,20 @@
             <video id="video" autoplay></video>
             <form  action="module/penelitian_usulan_baru/frm_verifikasi_tanda_tangan_proses.php" method="POST" enctype="multipart/form-data" id="pdfForm">
               <input type="hidden" name="pdf_file" id="pdfUpload" accept="application/pdf" value="<?php echo $_GET['file']; ?>" required>
-              <input type="text" name="idx" value="<?php echo $_GET['idx']; ?>">
+              <input type='hidden' name='idx' value='<?php echo $_GET['idx'] ?>'>
+              <input type="hidden" name="nama_user" value="<?php echo $_SESSION['nama_user']; ?>">
+              <?php 
+              $query = "SELECT * FROM pengajuan_penelitian WHERE dokumen_lembar_pengesahan='" . $_GET['file'] . "'";
+              $sql = mysqli_query($server1, $query);
+
+              if ($sql) {
+                  while ($row = mysqli_fetch_array($sql)) {
+                      echo '<input type="hidden" name="judul_penelitian" value="' . htmlspecialchars($row['judul_penelitian'], ENT_QUOTES, 'UTF-8') . '">';
+                  }
+              } else {
+                  echo "Error in query: " . mysqli_error($server1);
+              }
+              ?>
               <input type="hidden" name="image" id="imageData">
               <input type="hidden" name="date" id="dateData">
               <input type="hidden" name="positionX" id="positionX">
@@ -64,7 +77,7 @@
               <input type="hidden" name="imageWidth" id="imageWidth">
               <input type="hidden" name="imageHeight" id="imageHeight">
               <div class="btn-action" style="display: flex; flex-direction: column; gap: 10px;">
-                <button id="capture" type="submit" name="submit_button" class="btn btn-primary">Simpan</button>
+                  <button id="capture" type="submit" name="submit_button" class="btn btn-primary">Verifikasi Dokumen</button>
               </div>
               <a href="" target="_blank"></a>
               <div>
