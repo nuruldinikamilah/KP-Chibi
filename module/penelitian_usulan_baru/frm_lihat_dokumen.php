@@ -87,12 +87,23 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.5.207/pdf.min.js"></script>
   <script>
+
+function checkFileExists(filePath, fallbackPath) {
+    var http = new XMLHttpRequest();
+    http.open('HEAD', filePath, false);
+    http.send();
+    return http.status === 200 ? filePath : fallbackPath;
+  }
+
 document.addEventListener("DOMContentLoaded", function () {
   var canvas = new fabric.Canvas('editCanvas');
   
+  var coverdokumen = 'cover_dokumen/<?php echo $_GET['file']; ?>';
   // Load the image or PDF as an image into the canvas
-  var filePath = 'dokumen_bukti_verifikasi/pdf/<?php echo $_GET['file']; ?>';
+  var noncoverdokumen = 'dokumen_bukti_verifikasi/pdf/<?php echo $_GET['file']; ?>';
   
+  var filePath = checkFileExists(noncoverdokumen, coverdokumen);
+
   // Check if the file is a PDF or an image based on its extension
   if (filePath.endsWith('.pdf')) {
     // Load PDF as image

@@ -110,7 +110,7 @@ if ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '41277000
                     <td><?php echo $row['judul_penelitian']; ?> </td>
                     <td><?php echo $kaprodi_signature; ?></td>
                     <td><?php echo $dekan_signature; ?></td>
-                    <td><a class='button' href='view.php?menu=penelitian&act=lihat_dokumen&file=<?php echo $row['cover_dokumen']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Lihat Dokumen</a>
+                    <td><a class='button' name="cover_dokumen" href='view.php?menu=penelitian&act=lihat_dokumen&file=<?php echo $row['cover_dokumen']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Lihat Dokumen</a>
                     <td><a class='button' href='view.php?menu=penelitian&act=lihat_dokumen&file=<?php echo $row['dokumen_lembar_pengesahan']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Lihat Dokumen</a>
                     <td><a class='button' href='view.php?menu=penelitian&act=verifikasi_tanda_tangan&file=<?php echo $row['dokumen_lembar_pengesahan']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Verifikasi</a>
                     <a class='button' href='view.php?menu=penelitian&act=verifikasi_tanda_tangan&file=<?php echo $row['dokumen_lembar_pengesahan']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Tidak Verifikasi</a></td>
@@ -125,7 +125,7 @@ if ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '41277000
                     <td><?php echo $row['judul_penelitian']; ?> </td>
                     <td><?php echo $kaprodi_signature; ?></td>
                     <td><?php echo $dekan_signature; ?></td>
-                    <td><a class='button' href='view.php?menu=penelitian&act=lihat_dokumen&file=<?php echo $row['cover_dokumen']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Lihat Dokumen</a>
+                    <td><a class='button' name="cover_dokumen" href='view.php?menu=penelitian&act=lihat_dokumen&file=<?php echo $row['cover_dokumen']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Lihat Dokumen</a>
                     <td><a class='button' href='view.php?menu=penelitian&act=lihat_dokumen&file=<?php echo $row['dokumen_lembar_pengesahan']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Lihat Dokumen</a>
                     <td><a class='button' href='view.php?menu=penelitian&act=verifikasi_tanda_tangan&file=<?php echo $row['dokumen_lembar_pengesahan']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Verifikasi</a>
                     <a class='button' href='view.php?menu=penelitian&act=verifikasi_tanda_tangan&file=<?php echo $row['dokumen_lembar_pengesahan']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Tidak Verifikasi</a></td>
