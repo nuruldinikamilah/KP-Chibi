@@ -137,11 +137,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $idx=my_simple_crypt($_POST['idx'], 'd' );
 
   // If we have a valid column, proceed with the query
-  $query_pdf = "UPDATE `pengajuan_penelitian` SET `dokumen_lembar_pengesahan` = '".$pdf_nm."' WHERE `idx_penelitian` = '".$idx."'";
-  $query_verif = "INSERT INTO bukti_verif(file_verif, idx_pengajuan_penelitian) VALUES('$webcame_name', '$idx')";
+  $query_pdf = "UPDATE `pengajuan_penelitian` SET `dokumen_lembar_pengesahan` = '".$pdf_nm."', status_pengajuan = NULL WHERE `idx_penelitian` = '".$idx."'";
   
   $result = mysqli_query($server1, $query_pdf);
-  $result_verif = mysqli_query($server1, $query_verif);
+
+  $query_check = "SELECT COUNT(*) AS count FROM bukti_verif WHERE idx_pengajuan_penelitian = '$idx'";
+  $result_check = mysqli_query($server1, $query_check);
+  
+  if ($result_check) {
+      $row = mysqli_fetch_assoc($result_check);
+      if ($row['count'] > 0) {
+          // If the record exists, update it
+          $query_verif = "UPDATE bukti_verif SET file_verif = '$webcame_name' WHERE idx_pengajuan_penelitian = '$idx'";
+          $result_verif = mysqli_query($server1, $query_verif);
+      } else {
+          // If the record does not exist, insert a new one
+          $query_verif = "INSERT INTO bukti_verif (file_verif, idx_pengajuan_penelitian) VALUES ('$webcame_name', '$idx')";
+          $result_verif = mysqli_query($server1, $query_verif);
+      }
+  } else {
+      echo "Error checking record: " . mysqli_error($connection);
+  }  
+
   
   // Check the results and output success or error messages
   if ($result &&  $result_verif) {

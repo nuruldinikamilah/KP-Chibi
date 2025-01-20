@@ -181,10 +181,14 @@ if (isset($_GET['status'])) {
                         <tr id=t_dokumen_file_lp>
                                 <td class="text-left align-text-bottom col-md-2 align-middle" style="width: 40%">
                                     <label for=""><b>Masukan File Halaman pengesahan Yang Telah Ditandatangani
-                                            <br>
-                                            <a href="<?php echo "module/penelitian_usulan_baru/lembar_pengesahan.php?idx=" . $_GET['idx']; ?>" id="dokumen_pengesahan_template"download>Download Lembar Pengesahan</a>
+                                            <!-- <br>
+                                            <a href="<?php echo "module/penelitian_usulan_baru/lembar_pengesahan.php?idx=" . $_GET['idx']; ?>" id="dokumen_pengesahan_template"download>Download Lembar Pengesahan</a> -->
                                 </td>
                                 <td class="text-left align-text-bottom col-md-2" style="width: 60%;">
+                                    <br>
+                                    <span class="btn btn-primary fileinput-button btn-xs m-r-5">
+                                        <a href="<?php echo "module/penelitian_usulan_baru/lembar_pengesahan.php?idx=" . $_GET['idx']; ?>" style="text-decoration:none;color: inherit;" id="dokumen_pengesahan_template"download>Download Lembar Pengesahan</a>
+                                    </span>
                                     <span class="btn btn-danger fileinput-button btn-xs m-r-5">
                                         <i class="fa fa-plus"></i>
                                         <?php
@@ -220,6 +224,7 @@ if (isset($_GET['status'])) {
                                         <label id="nama_upload_file_lp"></label>
 
                                         <div id="div-tanda-tangan"></div>
+                                    <br>
                                 </td>
                             </tr>                            
                             <?php
@@ -231,6 +236,7 @@ if (isset($_GET['status'])) {
                                     <td class="text-left align-text-bottom col-md-2 align-middle">
                                         <br>
                                         <a href="<?php echo "dokumen_bukti_verifikasi/pdf/" . $r['dokumen_lembar_pengesahan']; ?>" download>Download File Lembar Pengesahan Yang Sudah Ditandatangani</a>
+                                        <br>
                                         <a href="<?php echo "dokumen_bukti_verifikasi/pdf/" . $bv['file_verif']; ?>" download>Download File Bukti Pengesahan </a>
                                     </td>
                                 </tr>
@@ -244,12 +250,15 @@ if (isset($_GET['status'])) {
                                             <!-- <br><a href="https://dp3m.unikom.ac.id/pengajuan/view.php?menu=buku_panduan">Download Template Usulan File Penelitian Internal</b></label></a> -->
                                 </td>
                                 <td class="text-left align-text-bottom col-md-2" style="width: 60%;">
+                                    <br>
                                     <span class="btn btn-danger fileinput-button btn-xs m-r-5">
                                         <i class="fa fa-plus"></i>
                                         <span><?php echo $kata; ?> File</span>
                                         <input type="file" name="file_cover" id="file_cover_dokumen" accept="application/pdf" />
                                     </span>
                                     <label id="nama_upload_file_cover"></label>
+                                    <br>
+                                    <br>
                                 </td>
                             </tr>
                             <?php
@@ -270,15 +279,22 @@ if (isset($_GET['status'])) {
                             <tr id=t_dokumen_file>
                                 <td class="text-left align-text-bottom col-md-2 align-middle" style="width: 40%">
                                     <label for=""><b>Masukan File Dokumen Proposal Penelitian
-                                            <br><a href="https://dp3m.unikom.ac.id/pengajuan/view.php?menu=buku_panduan">Download Template Usulan File Penelitian Internal</b></label></a>
+                                            <!-- <br><a href="https://dp3m.unikom.ac.id/pengajuan/view.php?menu=buku_panduan">Download Template Usulan File Penelitian Internal</b></a> -->
+                                    </label>
                                 </td>
                                 <td class="text-left align-text-bottom col-md-2" style="width: 60%;">
+                                    <br>
+                                    <span class="btn btn-primary fileinput-button btn-xs m-r-5">
+                                        <a style="text-decoration:none;color: inherit;" href="https://dp3m.unikom.ac.id/pengajuan/view.php?menu=buku_panduan">Download Template Usulan File Penelitian Internal</a>
+                                    </span>
                                     <span class="btn btn-danger fileinput-button btn-xs m-r-5">
                                         <i class="fa fa-plus"></i>
                                         <span><?php echo $kata; ?> File</span>
                                         <input type="file" name="file" id="file_dokumen" accept="application/pdf" />
                                     </span>
                                     <label id="nama_upload_file"></label>
+                                    <br>
+                                    <br>
                                 </td>
                             </tr>
                             <?php
@@ -492,7 +508,7 @@ if (isset($_GET['status'])) {
                 fileInputModal.files = dataTransfer.files;
 
                 var_div_ttd = document.getElementById('div-tanda-tangan');
-                var_div_ttd.innerHTML = "<button type='button' onclick='handleClick()'>Verifikasi</button>";
+                var_div_ttd.innerHTML = "<br><button class='btn btn-success fileinput-button btn-xs m-r-5' type='button' onclick='handleClick()'>Verifikasi</button>";
 
                 var reader = new FileReader();
                 reader.onload = function() {

@@ -264,24 +264,49 @@ if(isset($_GET['status']))
                               $judul_penelitian = str_replace(' ', '_', $r['judul_penelitian']);
                             ?>
                             <?php
-                               if ($r['status_pengajuan']!='')
-                              {
+                            if ($r['status_pengajuan'] != '') {
+                                if ($r['status_pengajuan'] == 'ditolak') {
+                                    // Output the modal HTML
+                                    echo '
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="rejectedModal" tabindex="-1" role="dialog" aria-labelledby="rejectedModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-danger text-white">
+                                                    <h5 class="modal-title" id="rejectedModalLabel"> Pengajuan Ditolak</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p class="lead">Harap perbaiki lembar pengesahan, pengajuan ditolak!</p>
+                                                    <p>Silakan periksa kembali dokumen Anda dan pastikan semua persyaratan terpenuhi.</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Script to show the modal automatically -->
+                                    <script>
+                                        $(document).ready(function(){
+                                            $("#rejectedModal").modal("show");
+                                        });
+                                    </script>';
+                                }
                                 ?>
-                                <span class="text-bold"><?php echo ucfirst($r['status_pengajuan']);?></span>
+                                <span class="text-bold"><?php echo ucfirst($r['status_pengajuan']); ?></span>
                                 <?php
-                              }
-                              else if (($form_peneliti==0)|| ($form_dana==0) || ($form_proposal==0) || ($r['validasi_proposal_pengguna']!='y'))
-                              {
+                            } else if (($form_peneliti == 0) || ($form_dana == 0) || ($form_proposal == 0) || ($r['validasi_proposal_pengguna'] != 'y')) {
                                 ?>
-                                  <span class="blink"><font color="red"><b>Belum Lengkap</b></blink></span>
+                                <span class="blink"><font color="red"><b>Belum Lengkap</b></font></span>
                                 <?php
-                              }
-                              else
-                              {
+                            } else {
                                 ?>
-                                <span class="blink"><font color="red"><b>Diajukan</b></blink></span>
-                              <?php
-                              }
+                                <span class="blink"><font color="red"><b>Diajukan</b></font></span>
+                                <?php
+                            }
                             ?>
                           </td>
                           <td>
@@ -317,8 +342,8 @@ if(isset($_GET['status']))
                               $button_class = ($kaprodi_signature === 'Telah Diverifikasi' && $dekan_signature === 'Telah Diverifikasi') ? 'button' : 'button disabled';
                               $button_action = ($kaprodi_signature === 'Telah Diverifikasi' && $dekan_signature === 'Telah Diverifikasi') ? "href='$file_path'" : '';
                               ?>
-                                  <td><?php echo $kaprodi_signature; ?></td>
-                                  <td><?php echo $dekan_signature; ?></td>
+                                  <td><?php echo "<span class='blink'><font color='red'><b>$kaprodi_signature</b></font></span>"; ?></td>
+                                  <td><?php echo "<span class='blink'><font color='red'><b>$dekan_signature</b></font></span>"; ?></td>
                           <?php } ?>
                           </tr>
                         <?php
