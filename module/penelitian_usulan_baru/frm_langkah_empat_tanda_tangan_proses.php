@@ -108,6 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
   // Save the PDF for the uploaded image
   $pdf_nm = 'Lampiran Tanda Tangan' . time() . '.pdf';
+  // $pdf_nm = "lpa-" . uniqid() . "-" . time() . '.pdf'; // 5dab1961e93a7-1571494241
   $pdfName2 = '../../dokumen_bukti_verifikasi/pdf/' . $pdf_nm;
   $pdf2->Output('F', $pdfName2);
 

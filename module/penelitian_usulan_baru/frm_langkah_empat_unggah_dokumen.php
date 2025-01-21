@@ -284,9 +284,9 @@ if (isset($_GET['status'])) {
                                 </td>
                                 <td class="text-left align-text-bottom col-md-2" style="width: 60%;">
                                     <br>
-                                    <span class="btn btn-primary fileinput-button btn-xs m-r-5">
+                                    <!-- <span class="btn btn-primary fileinput-button btn-xs m-r-5">
                                         <a style="text-decoration:none;color: inherit;" href="https://dp3m.unikom.ac.id/pengajuan/view.php?menu=buku_panduan">Download Template Usulan File Penelitian Internal</a>
-                                    </span>
+                                    </span> -->
                                     <span class="btn btn-danger fileinput-button btn-xs m-r-5">
                                         <i class="fa fa-plus"></i>
                                         <span><?php echo $kata; ?> File</span>

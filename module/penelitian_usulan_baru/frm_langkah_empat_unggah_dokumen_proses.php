@@ -120,8 +120,9 @@ if ($_SESSION['nik_user'] == '') {
 					unlink($hapus_mitra);
 				}
 			}
+			echo
 			//tidak perlu insert karena hanya menggunakan 1 tabel
-			// $result = mysqli_query($server1, "UPDATE `pengajuan_penelitian` SET `dokumen_proposal` = '" . $newfilename . "',`dokumen_lembar_pengesahan` = '" . $newfilename_lp . "',`dokumen_lembar_mitra` = '" . $newfilename_mitra . "' WHERE `idx_penelitian` = '" . $id . "'");
+			$result = mysqli_query($server1, "UPDATE `pengajuan_penelitian` SET `cover_dokumen`= '". $newfilename_cover. "',`dokumen_proposal` = '" . $newfilename . "',`dokumen_lembar_mitra` = '" . $newfilename_mitra . "' WHERE `idx_penelitian` = '" . $id . "'");
 			// First, check if the record exists in the tanda_tangan_penelitian table
 			$check_query = mysqli_query($server1, "SELECT * FROM `tanda_tangan_penelitian` WHERE `idx_penelitian` = '" . $id . "'");
 

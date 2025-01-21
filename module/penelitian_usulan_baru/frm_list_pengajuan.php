@@ -143,7 +143,7 @@ if ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '41277000
             <th>Dekan</th>
             <th>Lihat Proposal</th>
             <th>Lihat Pengesahan</th>
-            <th></th>
+            <th>Aksi</th>
         </tr>
         <?php
         $index = 1;
@@ -170,6 +170,8 @@ if ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '41277000
                     >
                         Verifikasi
                     </a>    
+                    <br>
+                    <br>
                     <!-- <a class='button' href='view.php?menu=penelitian&act=verifikasi_tanda_tangan&file=<?php echo $row['dokumen_lembar_pengesahan']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Verifikasi</a> -->
                     <form method="POST">
                         <input type="hidden" name="idx_penelitian" value="<?php echo $row['idx_penelitian']; ?>">
@@ -199,6 +201,8 @@ if ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '41277000
                     >
                         Verifikasi
                     </a>
+                    <br>
+                    <br>
                     <form method="POST">
                         <input type="hidden" name="idx_penelitian" value="<?php echo $row['idx_penelitian']; ?>">
                         <button type="submit" class="button-tidak-verif">Tidak Verifikasi</button>

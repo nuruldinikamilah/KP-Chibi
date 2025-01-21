@@ -120,12 +120,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   if ($_SESSION['nik_user'] == '41277006134') { // Pa han han
     $pdf3->Image($qrCodePath, 100 / 3.78, 625 / 3.78, 50 / 3.78, 50 / 3.78);
     $pdf3->SetFont('Times','',12);
-    $pdf3->Text(59 / 3.78, 690 / 3.78, $_SESSION['nama_user']);
+    $pdf3->Text(59 / 3.78, 690 / 3.78, $_SESSION['nama_dan_gelar_user']);
     $pdf3->Text(59 / 3.78, 709 / 3.78, $_SESSION['nik_user']);
   } else if($_SESSION['nik_user'] == '412770002'){ // Pak dekan
     $pdf3->Image($qrCodePath, 355 / 3.78, 855 / 3.78, 50 / 3.78, 50 / 3.78);
     $pdf3->SetFont('Times','',12);
-    $pdf3->Text(278 / 3.78, 920 / 3.78, $_SESSION['nama_user']);
+    $pdf3->Text(278 / 3.78, 920 / 3.78, $_SESSION['nama_dan_gelar_user']);
     $pdf3->Text(278 / 3.78, 939 / 3.78, $_SESSION['nik_user']);
   }
   else if($_SESSION['nik_user'] == '41277006052'){
@@ -186,7 +186,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             echo "Error inserting bukti_verif: " . mysqli_error($server1);
         }
-        header('location:../../view.php?menu=penelitian&act=list_pengajuan');
+        echo '<script type="text/javascript">
+        alert("Berhasil");
+        setTimeout(function() {
+            window.location.href = "../../view.php?menu=penelitian&act=list_pengajuan";
+        }, 100); // Redirect after 100 milliseconds
+      </script>';
     } else {
         echo "Invalid user NIP.";
     }
