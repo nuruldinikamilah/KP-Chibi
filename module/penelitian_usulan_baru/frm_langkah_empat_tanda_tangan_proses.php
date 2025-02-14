@@ -123,10 +123,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $qrCodePath = '../../dokumen_bukti_verifikasi/qr_code/qr_code_' . time() . '.png';
   $pdfUrl = 'http://localhost/Kerja%20Praktek/KP-Chibi-verif-qr/dokumen_bukti_verifikasi/pdf/' . $webcame_name; // Change to the actual URL or path where the image will be hosted
   QRcode::png($pdfUrl, $qrCodePath);
-  if ($_SESSION['nik_user'] == '41277006052') {
+  if ($_SESSION['role'] == 'dosen') {
     $pdf3->Image($qrCodePath, 420 / 3.78, 625 / 3.78, 50 / 3.78, 50 / 3.78);
-  } elseif ($_SESSION['nik_user'] == '41277006134') {
-    $pdf3->Image($qrCodePath, 100 / 3.78, 625 / 3.78, 50 / 3.78, 50 / 3.78);
   }
 
   $pdf3->Output('F', $pdfName2);
@@ -138,9 +136,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $idx=my_simple_crypt($_POST['idx'], 'd' );
 
   // If we have a valid column, proceed with the query
-  $query_pdf = "UPDATE `pengajuan_penelitian` SET `dokumen_lembar_pengesahan` = '".$pdf_nm."', status_pengajuan = NULL WHERE `idx_penelitian` = '".$idx."'";
   
+  $query_pdf = "UPDATE `pengajuan_penelitian` SET `dokumen_lembar_pengesahan` = '".$pdf_nm."', status_pengajuan = NULL WHERE `idx_penelitian` = '".$idx."'";  
   $result = mysqli_query($server1, $query_pdf);
+
+  $query_queue = "UPDATE antrian_tanda_tangan SET status_pengajuan_persetujuan = '0' WHERE idx_penelitian = '$idx'";
+  $result_queue = mysqli_query($server1, $query_queue);
 
   $query_check = "SELECT COUNT(*) AS count FROM bukti_verif WHERE idx_pengajuan_penelitian = '$idx'";
   $result_check = mysqli_query($server1, $query_check);

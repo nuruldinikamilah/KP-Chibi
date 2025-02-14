@@ -24,7 +24,8 @@
         "email": "HanHanMaulana@email.unikom.ac.id",
         "nama_dan_gelar": "Han Han Maulana, S.T, M.Kom",
         "photo": "https://lh3.googleusercontent.com/a-/AOh14GgZCGxzogP-FParpURL4Yq5BSY8IZ-Rr6vctBVuUg=s50",
-        "dosen": 1
+        "dosen": 1,
+        "kaprodi": 1
       }  
     },
     {
@@ -37,7 +38,8 @@
         "email": "-",
         "nama_dan_gelar": "Assoc. Prof. Dr. Ir. Herman S. Soegoto MBA.",
         "photo": "https://lh3.googleusercontent.com/a-/AOh14GjdgtzmuuXc90jvnco7oV-yZnp4aX7IV9Jt5x_BuyE=s50",
-        "dosen": 1
+        "dosen": 1,
+        "dekan": 1
       }
     }
  ]

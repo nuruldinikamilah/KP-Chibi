@@ -86,7 +86,7 @@ if(isset($_GET['status']))
           
                 <table id="tabel_distribusi" class="table table-striped table-bordered">
                     <thead>
-                    <tr><th>&nbsp;</th><th width="8%">Tahun Pengajuan</th><th width="15%">Judul</th><th>Personil Penelitian</th><th>Penelitian</th><th>Dana</th><th>File Proposal</th><th>Status Proposal</th><th>Catatan Reviewer</th><th>Verifikasi Kaprodi</th><th>Verifikasi Dekan</th></tr>
+                    <tr><th>&nbsp;</th><th width="8%">Tahun Pengajuan</th><th width="15%">Judul</th><th>Personil Penelitian</th><th>Penelitian</th><th>Dana</th><th>File Proposal</th><th>Status Proposal</th><th>Catatan Reviewer</th><th>Verifikasi Kaprodi</th><th>Verifikasi Dekan<th>Catatan Perbaikan</th></tr>
                     </thead>
                     <tbody>
                          <?php
@@ -131,7 +131,6 @@ if(isset($_GET['status']))
                                                               v_pengajuan_penelitian
                                                               WHERE nip_anggota='".$_SESSION['nik_user']."' order by idx_penelitian desc");
                      }
-                      
 
                      $no=1;
                      while($r=mysqli_fetch_array($sql_data_master))
@@ -144,9 +143,9 @@ if(isset($_GET['status']))
                               </a>
                             <?php
                             if (isset($_SESSION['nik_user']) && $_SESSION['nik_user'] == '41277006052') {
-                              $query = "SELECT * FROM pengajuan_penelitian LEFT JOIN tanda_tangan_penelitian ON pengajuan_penelitian.idx_penelitian = tanda_tangan_penelitian.idx_penelitian";
+                              $query = "SELECT * FROM pengajuan_penelitian LEFT JOIN antrian_tanda_tangan ON pengajuan_penelitian.idx_penelitian = antrian_tanda_tangan.idx_penelitian";
                             } else if (isset($_SESSION['nik_user']) && ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '412770002')) {
-                                $query = "SELECT * FROM pengajuan_penelitian LEFT JOIN tanda_tangan_penelitian ON pengajuan_penelitian.idx_penelitian = tanda_tangan_penelitian.idx_penelitian";
+                                $query = "SELECT * FROM pengajuan_penelitian LEFT JOIN antrian_tanda_tangan ON pengajuan_penelitian.idx_penelitian = antrian_tanda_tangan.idx_penelitian";
                             }
                             
                             // Execute the query
@@ -154,8 +153,8 @@ if(isset($_GET['status']))
                             $index = 1;
                             while ($row = mysqli_fetch_array($sql)) {
                                 $file_path = "dokumen_bukti_verifikasi/pdf/" . $row['dokumen_lembar_pengesahan'];
-                                $kaprodi_signature = is_null($row['tanda_tangan_kaprodi']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
-                                $dekan_signature = is_null($row['tanda_tangan_dekan']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
+                                $kaprodi_signature = is_null($row['dokumen_tanda_tangan_kaprodi']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
+                                $dekan_signature = is_null($row['dokumen_tanda_tangan_dekan']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
   
                                 $button_label = 'Download';
                                 $button_class = ($kaprodi_signature === 'Telah Diverifikasi' && $dekan_signature === 'Telah Diverifikasi') ? 'button' : 'button disabled';
@@ -267,19 +266,27 @@ if(isset($_GET['status']))
                             if ($r['status_pengajuan'] != '') {
                                 if ($r['status_pengajuan'] == 'ditolak') {
                                     // Output the modal HTML
+                                    $komentar = (!empty($r['catatan_dekan']) ? htmlspecialchars($r['catatan_dekan'], ENT_QUOTES, 'UTF-8') : '') . 
+                                    (!empty($r['catatan_kaprodi']) ? "\n" . htmlspecialchars($r['catatan_kaprodi'], ENT_QUOTES, 'UTF-8') : '');
+                    
+                                    // If both are empty, set default message
+                                    if (empty($komentar)) {
+                                        $komentar = 'Tidak ada komentar.';
+                                    }
                                     echo '
                                     <!-- Modal -->
                                     <div class="modal fade" id="rejectedModal" tabindex="-1" role="dialog" aria-labelledby="rejectedModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header bg-danger text-white">
-                                                    <h5 class="modal-title" id="rejectedModalLabel"> Pengajuan Ditolak</h5>
+                                                    <h5 class="modal-title" id="rejectedModalLabel">Pengajuan Ditolak</h5>
                                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                         <span aria-hidden="true">&times;</span>
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <p class="lead">Harap perbaiki lembar pengesahan, pengajuan ditolak!</p>
+                                                    <p><strong>Komentar:</strong><br> ' . $komentar . '</p>
                                                     <p>Silakan periksa kembali dokumen Anda dan pastikan semua persyaratan terpenuhi.</p>
                                                 </div>
                                                 <div class="modal-footer">
@@ -288,6 +295,7 @@ if(isset($_GET['status']))
                                             </div>
                                         </div>
                                     </div>
+                                
                                     <!-- Script to show the modal automatically -->
                                     <script>
                                         $(document).ready(function(){
@@ -325,9 +333,9 @@ if(isset($_GET['status']))
                           </td>
                           <?php
                           if (isset($_SESSION['nik_user']) && $_SESSION['nik_user'] == '41277006052') {
-                            $query = "SELECT * FROM pengajuan_penelitian LEFT JOIN tanda_tangan_penelitian ON pengajuan_penelitian.idx_penelitian = tanda_tangan_penelitian.idx_penelitian";
+                            $query = "SELECT * FROM pengajuan_penelitian LEFT JOIN antrian_tanda_tangan ON pengajuan_penelitian.idx_penelitian = antrian_tanda_tangan.idx_penelitian";
                           } else if (isset($_SESSION['nik_user']) && ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '412770002')) {
-                              $query = "SELECT * FROM pengajuan_penelitian LEFT JOIN tanda_tangan_penelitian ON pengajuan_penelitian.idx_penelitian = tanda_tangan_penelitian.idx_penelitian";
+                              $query = "SELECT * FROM pengajuan_penelitian LEFT JOIN antrian_tanda_tangan ON pengajuan_penelitian.idx_penelitian = antrian_tanda_tangan.idx_penelitian";
                           }
                           
                           // Execute the query
@@ -335,8 +343,8 @@ if(isset($_GET['status']))
                           $index = 1;
                           while ($row = mysqli_fetch_array($sql)) {
                               $file_path = "dokumen_bukti_verifikasi/pdf/" . $row['dokumen_lembar_pengesahan'];
-                              $kaprodi_signature = is_null($row['tanda_tangan_kaprodi']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
-                              $dekan_signature = is_null($row['tanda_tangan_dekan']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
+                              $kaprodi_signature = is_null($row['dokumen_tanda_tangan_kaprodi']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
+                              $dekan_signature = is_null($row['dokumen_tanda_tangan_dekan']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
 
                               $button_label = 'Download';
                               $button_class = ($kaprodi_signature === 'Telah Diverifikasi' && $dekan_signature === 'Telah Diverifikasi') ? 'button' : 'button disabled';
@@ -345,6 +353,16 @@ if(isset($_GET['status']))
                                   <td><?php echo "<span class='blink'><font color='red'><b>$kaprodi_signature</b></font></span>"; ?></td>
                                   <td><?php echo "<span class='blink'><font color='red'><b>$dekan_signature</b></font></span>"; ?></td>
                           <?php } ?>
+                          <td><?php
+                          if (isset($r['catatan_dekan']))
+                          {
+                             echo $r['catatan_dekan'];
+                          }
+                          else if(isset($r['catatan_kaprodi']))
+                          {
+                             echo $r['catatan_kaprodi'];
+                          }
+                          ?></td>
                           </tr>
                         <?php
                         $no++;

@@ -122,13 +122,13 @@ if ($_SESSION['nik_user'] == '') {
 			}
 			echo
 			//tidak perlu insert karena hanya menggunakan 1 tabel
-			$result = mysqli_query($server1, "UPDATE `pengajuan_penelitian` SET `cover_dokumen`= '". $newfilename_cover. "',`dokumen_proposal` = '" . $newfilename . "',`dokumen_lembar_mitra` = '" . $newfilename_mitra . "' WHERE `idx_penelitian` = '" . $id . "'");
+			$result = mysqli_query($server1, "UPDATE `pengajuan_penelitian` SET `cover_dokumen`= '". $newfilename_cover. "',`dokumen_proposal` = '" . $newfilename . "',`dokumen_lembar_mitra` = '" . $newfilename_mitra . "', `catatan_dekan` = NULL, `catatan_kaprodi` = NULL WHERE `idx_penelitian` = '" . $id . "'");
 			// First, check if the record exists in the tanda_tangan_penelitian table
-			$check_query = mysqli_query($server1, "SELECT * FROM `tanda_tangan_penelitian` WHERE `idx_penelitian` = '" . $id . "'");
-
+			// $check_query = mysqli_query($server1, "SELECT * FROM `tanda_tangan_penelitian` WHERE `idx_penelitian` = '" . $id . "'");
+			$check_query = mysqli_query($server1, "SELECT * FROM `antrian_tanda_tangan` WHERE `idx_penelitian` = '" . $id . "'");
 			if (mysqli_num_rows($check_query) > 0) {
 				// If the record exists, update it
-				$update_query = mysqli_query($server1, "UPDATE `tanda_tangan_penelitian` SET `tanda_tangan_pengaju` = '" . $newfilename . "' WHERE `idx_penelitian` = '" . $id . "'");
+				$update_query = mysqli_query($server1, "UPDATE `antrian_tanda_tangan` SET `dokumen_tanda_tangan_pengaju` = '" . $newfilename . "' WHERE `idx_penelitian` = '" . $id . "'");
 				
 				if ($update_query) {
 					// Redirect on successful update
@@ -139,15 +139,15 @@ if ($_SESSION['nik_user'] == '') {
 				}
 			} else {
 				// If the record does not exist, insert a new one
-				$insert_query = mysqli_query($server1, "INSERT INTO `tanda_tangan_penelitian` (`idx_penelitian`, `tanda_tangan_pengaju`) VALUES ('$id', '$newfilename')");
-				
-				if ($insert_query) {
-					// Redirect on successful insert
-					header('location:../../view.php?menu=penelitian&act=usulan_baru_langkah_lima&idx=' . $_POST['idx'] . '&status=' . $redirect);
-				} else {
-					// Redirect on insert failure
-					header('location:../../view.php?menu=penelitian&act=usulan_baru_langkah_empat&idx=' . $_POST['idx'] . '&status=gagal&kode=' . mysqli_error($server1));
-				}
+			$insert_query = mysqli_query($server1, "INSERT INTO `antrian_tanda_tangan` (`idx_penelitian`, `dokumen_tanda_tangan_pengaju`) VALUES ('$id', '$newfilename')");
+			
+			if ($insert_query) {
+				// Redirect on successful insert
+				header('location:../../view.php?menu=penelitian&act=usulan_baru_langkah_lima&idx=' . $_POST['idx'] . '&status=' . $redirect);
+			} else {
+				// Redirect on insert failure
+				header('location:../../view.php?menu=penelitian&act=usulan_baru_langkah_empat&idx=' . $_POST['idx'] . '&status=gagal&kode=' . mysqli_error($server1));
+			}
 			}
 		} else {
 			//REDIRECT

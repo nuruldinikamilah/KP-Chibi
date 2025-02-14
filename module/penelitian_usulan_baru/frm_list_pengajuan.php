@@ -2,11 +2,13 @@
 // echo $_SESSION['nik_user']; // User's NIP
 
 if (isset($_SESSION['nik_user']) && $_SESSION['nik_user'] == '41277006052') {
-    $query = "SELECT * FROM pengajuan_penelitian LEFT JOIN tanda_tangan_penelitian ON pengajuan_penelitian.idx_penelitian = tanda_tangan_penelitian.idx_penelitian";
-} else if (isset($_SESSION['nik_user']) && ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '412770002')) {
-    $query = "SELECT * FROM pengajuan_penelitian LEFT JOIN tanda_tangan_penelitian ON pengajuan_penelitian.idx_penelitian = tanda_tangan_penelitian.idx_penelitian";
+    $query = "SELECT * FROM pengajuan_penelitian LEFT JOIN tanda_tangan_penelitian ON pengajuan_penelitian.idx_penelitian = tanda_tangan_penelitian.idx_penelitian
+LEFT JOIN antrian_tanda_tangan on pengajuan_penelitian.idx_penelitian = antrian_tanda_tangan.idx_penelitian";
+} else if (isset($_SESSION['nik_user']) && ($_SESSION['role'] == 'kaprodi' || $_SESSION['role'] == 'dekan')) {
+    $query = "SELECT * FROM pengajuan_penelitian LEFT JOIN tanda_tangan_penelitian ON pengajuan_penelitian.idx_penelitian = tanda_tangan_penelitian.idx_penelitian
+LEFT JOIN antrian_tanda_tangan on pengajuan_penelitian.idx_penelitian = antrian_tanda_tangan.idx_penelitian";
 }
-
+// die;
 // Execute the query
 $sql = mysqli_query($server1, $query);
 
@@ -115,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-ob_end_flush(); // End output buffering and send all output to the browser
+// ob_end_flush(); // End output buffering and send all output to the browser
 ?>
 <div id="confirmationModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; background: #ffffff; padding: 20px 30px; border-radius: 8px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); text-align: center; font-family: Arial, sans-serif; max-width: 400px; width: 90%;">
   <p style="margin: 0 0 20px; font-size: 16px; color: #333333; line-height: 1.5;">
@@ -147,11 +149,13 @@ if ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '41277000
         </tr>
         <?php
         $index = 1;
-        while ($row = mysqli_fetch_array($sql)) {
-            if ($_SESSION['nik_user'] == '41277006134' && is_null($row['tanda_tangan_kaprodi']) && !is_null($row['tanda_tangan_pengaju']) ) {
+        $query_ambil_antrian = "SELECT * FROM pengajuan_penelitian LEFT JOIN antrian_tanda_tangan ON pengajuan_penelitian.idx_penelitian = antrian_tanda_tangan.idx_penelitian";
+        $sql_ambil_antrian = mysqli_query($server1, $query_ambil_antrian);
+        while ($row = mysqli_fetch_array($sql_ambil_antrian)) {
+            if ($_SESSION['role'] == 'kaprodi' && $row['dokumen_tanda_tangan_kaprodi'] === NULL && $row['status_pengajuan_persetujuan'] === "0") {
                 // For NIK 41277006134: Only show if tanda_tangan_kaprodi is NULL
                 $kaprodi_signature = 'Belum Diverifikasi';
-                $dekan_signature = is_null($row['tanda_tangan_dekan']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
+                $dekan_signature = is_null($row['dokumen_tanda_tangan_dekan']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
                 ?>
                 <tr>
                     <td><?php echo $index++; ?></td>
@@ -173,15 +177,37 @@ if ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '41277000
                     <br>
                     <br>
                     <!-- <a class='button' href='view.php?menu=penelitian&act=verifikasi_tanda_tangan&file=<?php echo $row['dokumen_lembar_pengesahan']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Verifikasi</a> -->
-                    <form method="POST">
+                    <form onsubmit="event.preventDefault(); showModalTidakVerif();">
                         <input type="hidden" name="idx_penelitian" value="<?php echo $row['idx_penelitian']; ?>">
                         <button type="submit" class="button-tidak-verif">Tidak Verifikasi</button>
                     </form>
+                    <div id="confirmationModalTidakVerif" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; background: #ffffff; padding: 20px 30px; border-radius: 8px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); text-align: center; font-family: Arial, sans-serif; max-width: 400px; width: 90%;">
+                        <p style="margin: 0 0 20px; font-size: 16px; color: #333333; line-height: 1.5;">
+                            Anda memilih <strong>Tidak Verifikasi</strong>. Harap cek kembali dokumen penelitian dan dokumen pengesahan. Apakah Anda yakin ingin melanjutkan proses ini?
+                        </p>
+                        <label for="reasonTidakVerif" style="font-weight: bold; font-size: 16px;">Komentar</label>
+                        
+                        <!-- Add id="idx" to make it accessible in JavaScript -->
+                        <input type="hidden" id="idx" name="idx_penelitian" value="<?php echo $row['idx_penelitian']; ?>">
+                        <input type="hidden" name="roles" id="roles" value="kaprodi">
+                        <textarea type="text" id="reasonTidakVerif" placeholder="Tambahkan Komentar" style="width: 100%; padding: 8px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px;"></textarea>
+                        
+                        <div style="display: flex; gap: 10px; justify-content: center;">
+                            <button id="confirmButton" style="background-color: #f44336; color: #ffffff; border: none; border-radius: 5px; padding: 10px 20px; font-size: 14px; cursor: pointer; transition: background-color 0.3s;" onclick="submitFormTidakVerif();">
+                                Ya, Tidak Verifikasi
+                            </button>
+                            <button id="cancelButton" style="background-color: #4CAF50; color: #ffffff; border: none; border-radius: 5px; padding: 10px 20px; font-size: 14px; cursor: pointer; transition: background-color 0.3s;" onclick="closeModalTidakVerif();">
+                                Batal
+                            </button>
+                        </div>
+                    </div>
+
+
                     <!-- <a class='button-tidak-verif' href='view.php?menu=penelitian&act=verifikasi_tanda_tangan&file=<?php echo $row['dokumen_lembar_pengesahan']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Tidak Verifikasi</a></td> -->
                 </tr>
-            <?php } elseif ($_SESSION['nik_user'] == '412770002' && is_null($row['tanda_tangan_dekan']) && !is_null($row['tanda_tangan_kaprodi']) && !is_null($row['tanda_tangan_pengaju'])) {
+            <?php } elseif ($_SESSION['role'] == 'dekan' && $row['dokumen_tanda_tangan_kaprodi'] != NULL && $row['dokumen_tanda_tangan_dekan'] === NULL && $row['status_pengajuan_persetujuan'] === "0") {
                 // For NIK 412770002: Only show if tanda_tangan_dekan is not NULL
-                $kaprodi_signature = is_null($row['tanda_tangan_kaprodi']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
+                $kaprodi_signature = is_null($row['dokumen_tanda_tangan_kaprodi']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
                 $dekan_signature = 'Belum Diverifikasi' ;
                 ?>
                 <tr>
@@ -203,10 +229,31 @@ if ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '41277000
                     </a>
                     <br>
                     <br>
-                    <form method="POST">
+                    <form onsubmit="event.preventDefault(); showModalTidakVerif();">
                         <input type="hidden" name="idx_penelitian" value="<?php echo $row['idx_penelitian']; ?>">
                         <button type="submit" class="button-tidak-verif">Tidak Verifikasi</button>
-                    </form> 
+                    </form>
+                    <div id="confirmationModalTidakVerif" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; background: #ffffff; padding: 20px 30px; border-radius: 8px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); text-align: center; font-family: Arial, sans-serif; max-width: 400px; width: 90%;">
+                        <p style="margin: 0 0 20px; font-size: 16px; color: #333333; line-height: 1.5;">
+                            Anda memilih <strong>Tidak Verifikasi</strong>. Harap cek kembali dokumen penelitian dan dokumen pengesahan. Apakah Anda yakin ingin melanjutkan proses ini?
+                        </p>
+                        <label for="reasonTidakVerif" style="font-weight: bold; font-size: 16px;">Komentar</label>
+                        
+                        <!-- Add id="idx" to make it accessible in JavaScript -->
+                        <input type="hidden" id="idx" name="idx_penelitian" value="<?php echo $row['idx_penelitian']; ?>">
+                        <input type="hidden" name="roles" id="roles" value="<?php echo $_SESSION['role']; ?>">
+                        <textarea id="reasonTidakVerif" placeholder="Tambahkan Komentar" style="width: 100%; padding: 8px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px;"></textarea>
+                        
+                        <div style="display: flex; gap: 10px; justify-content: center;">
+                            <button id="confirmButton" style="background-color: #f44336; color: #ffffff; border: none; border-radius: 5px; padding: 10px 20px; font-size: 14px; cursor: pointer; transition: background-color 0.3s;" onclick="submitFormTidakVerif();">
+                                Ya, Tidak Verifikasi
+                            </button>
+                            <button id="cancelButton" style="background-color: #4CAF50; color: #ffffff; border: none; border-radius: 5px; padding: 10px 20px; font-size: 14px; cursor: pointer; transition: background-color 0.3s;" onclick="closeModalTidakVerif();">
+                                Batal
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- <a class='button' href='view.php?menu=penelitian&act=verifikasi_tanda_tangan&file=<?php echo $row['dokumen_lembar_pengesahan']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Verifikasi</a> -->
                     <!-- <a class='button' href='view.php?menu=penelitian&act=verifikasi_tanda_tangan&file=<?php echo $row['dokumen_lembar_pengesahan']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Tidak Verifikasi</a></td> -->
                 </tr>
@@ -219,17 +266,18 @@ if ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '41277000
         <tr>
             <th>No</th>
             <th>Judul</th>
-            <th>Kaprodi</th>
-            <th>Dekan</th>
-            <th>Waktu Tanda Tangan</th>
+            <th>Waktu Verifikasi</th>
+            <th>Status</th>
             <th>Lihat Pengesahan</th>
         </tr>
         <?php
         // Reset result pointer for history table
-        mysqli_data_seek($sql, 0); 
+        // mysqli_data_seek($sql, 0); 
+        $query_ambil_history = "SELECT * FROM pengajuan_penelitian LEFT JOIN tanda_tangan_penelitian ON pengajuan_penelitian.idx_penelitian = tanda_tangan_penelitian.idx_penelitian";
+        $ambil_history = mysqli_query($server1, $query_ambil_history);
         $index = 1;
-        while ($row = mysqli_fetch_array($sql)) {
-            if ($_SESSION['nik_user'] == '41277006134' && !is_null($row['tanda_tangan_kaprodi'])) {
+        while ($row = mysqli_fetch_array($ambil_history)) {
+            if ($_SESSION['role'] == 'kaprodi' && isset($row['tanda_tangan_kaprodi'])) {
                 // For NIK 41277006134: Show in history if tanda_tangan_kaprodi is not NULL
                 $kaprodi_signature = 'Telah Diverifkasi';
                 $dekan_signature = is_null($row['tanda_tangan_dekan']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
@@ -237,12 +285,11 @@ if ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '41277000
                 <tr>
                     <td><?php echo $index++; ?></td>
                     <td><?php echo $row['judul_penelitian']; ?> </td>
-                    <td><?php echo $kaprodi_signature; ?></td>
-                    <td><?php echo $dekan_signature; ?></td>
                     <td><?php echo $row['waktu_tanda_tangan_kaprodi']; ?></td>
+                    <td><?php echo $row['status_pengajuan']; ?></td>
                     <td><a class='button' href='view.php?menu=penelitian&act=lihat_dokumen&file=<?php echo $row['dokumen_lembar_pengesahan']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Lihat Dokumen</a>
                 </tr>
-            <?php } elseif ($_SESSION['nik_user'] == '412770002' && !is_null($row['tanda_tangan_dekan'])) {
+            <?php } elseif ($_SESSION['role'] == 'dekan' && isset($row['tanda_tangan_dekan']))  {
                 // For NIK 412770002: Show in history if tanda_tangan_dekan is not NULL
                 $kaprodi_signature = is_null($row['tanda_tangan_kaprodi']) ? 'Belum Diverifikasi' : 'Telah Diverifikasi';
                 $dekan_signature = 'Telah Diverifikasi';
@@ -250,9 +297,8 @@ if ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '41277000
                 <tr>
                     <td><?php echo $index++; ?></td>
                     <td><?php echo $row['judul_penelitian']; ?> </td>
-                    <td><?php echo $kaprodi_signature; ?></td>
-                    <td><?php echo $dekan_signature; ?></td>
                     <td><?php echo $row['waktu_tanda_tangan_dekan']; ?></td>
+                    <td><?php echo $row['status_pengajuan']; ?></td>
                     <td><a class='button' href='view.php?menu=penelitian&act=lihat_dokumen&file=<?php echo $row['dokumen_lembar_pengesahan']; ?>&idx=<?php echo $row['idx_penelitian'] ?>'>Lihat Dokumen</a>
                 </tr>
             <?php }
@@ -320,4 +366,62 @@ if ($_SESSION['nik_user'] == '41277006134' || $_SESSION['nik_user'] == '41277000
     document.getElementById('confirmationModal').style.display = 'none';
     document.getElementById('modalBackdrop').style.display = 'none';
   });
+
+  function showModalTidakVerif() {
+    document.getElementById('confirmationModalTidakVerif').style.display = 'block';
+    document.getElementById('modalBackdropTidakVerif').style.display = 'block';
+  }
+
+  function submitFormTidakVerif() {
+    console.log("Button clicked!"); // Debugging: Check if function is triggered
+    
+    let reason = document.getElementById("reasonTidakVerif").value.trim();
+    let idxElement = document.getElementById("idx"); // Now this exists
+    let roles = document.getElementById("roles").value;
+
+    if (!idxElement) {
+        alert("Error: ID not found.");
+        return;
+    }
+
+    let idx = idxElement.value;
+
+    if (reason === "") {
+        alert("Silakan tambahkan komentar sebelum melanjutkan.");
+        return;
+    }
+
+    console.log("Submitting request with:", { reason, idx, roles });
+
+    fetch("module/penelitian_usulan_baru/frm_list_pengajuan_proses.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "reason=" + encodeURIComponent(reason) + "&idx=" + encodeURIComponent(idx) + "&roles=" + encodeURIComponent(roles)
+    })
+    
+    .then(response => response.json())
+    .then(data => {
+        console.log("Server response:", data);
+        if (data.success) {
+            alert("Pengajuan telah ditolak dan catatan telah diperbarui.");
+            closeModalTidakVerif();
+        } else {
+            alert("Terjadi kesalahan: " + data.message);
+        }
+    }).finally(() => {
+        window.location.reload();
+    });
+    // window.location.reload();
+    closeModalTidakVerif(); // Close the modal first
+}
+
+
+function closeModalTidakVerif() {
+    document.getElementById("confirmationModalTidakVerif").style.display = "none";
+    document.getElementById("modalBackdropTidakVerif").style.display = "none";
+    console.log("Modal closed!");
+}
+
 </script>

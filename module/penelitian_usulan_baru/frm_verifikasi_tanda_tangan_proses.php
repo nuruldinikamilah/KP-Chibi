@@ -117,18 +117,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $pdfUrl = 'http://localhost/Kerja%20Praktek/KP-Chibi-verif-qr/dokumen_bukti_verifikasi/pdf/' . $webcame_name; // Change to the actual URL or path where the image will be hosted
   QRcode::png($pdfUrl, $qrCodePath);
   
-  if ($_SESSION['nik_user'] == '41277006134') { // Pa han han
+  if ($_SESSION['role'] == 'kaprodi') { // Pa han han
     $pdf3->Image($qrCodePath, 100 / 3.78, 625 / 3.78, 50 / 3.78, 50 / 3.78);
     $pdf3->SetFont('Times','',12);
     $pdf3->Text(59 / 3.78, 690 / 3.78, $_SESSION['nama_dan_gelar_user']);
     $pdf3->Text(59 / 3.78, 709 / 3.78, $_SESSION['nik_user']);
-  } else if($_SESSION['nik_user'] == '412770002'){ // Pak dekan
+  } else if($_SESSION['role'] == 'dekan'){ // Pak dekan
     $pdf3->Image($qrCodePath, 355 / 3.78, 855 / 3.78, 50 / 3.78, 50 / 3.78);
     $pdf3->SetFont('Times','',12);
     $pdf3->Text(278 / 3.78, 920 / 3.78, $_SESSION['nama_dan_gelar_user']);
     $pdf3->Text(278 / 3.78, 939 / 3.78, $_SESSION['nik_user']);
   }
-  else if($_SESSION['nik_user'] == '41277006052'){
+  else if($_SESSION['role'] == 'dosen'){
     $pdf3->Image($qrCodePath, 420 / 3.78, 625 / 3.78, 50 / 3.78, 50 / 3.78);
   }
 
@@ -157,14 +157,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $column = 'tanda_tangan_pengaju'; // Handle other cases as necessary
     }
   }
+
+    if ($_SESSION['role'] == 'kaprodi') { // Pa han han
+      $query_update_antrian = "UPDATE antrian_tanda_tangan SET dokumen_tanda_tangan_kaprodi = '$pdf_nm' WHERE idx_penelitian = '$idx'";
+    } else if($_SESSION['role'] == 'dekan'){ 
+      $query_update_antrian = "UPDATE antrian_tanda_tangan SET dokumen_tanda_tangan_dekan = '$pdf_nm' WHERE idx_penelitian = '$idx'";
+    }// Pak dekan
     // If we have a valid column, proceed with the query
     if (!empty($column)) {
-        $query = "UPDATE tanda_tangan_penelitian SET $column = '$pdf_nm', $time_col = '$date' WHERE idx_penelitian = '$idx'";
+        $ttd_penelitian_check = mysqli_query($server1, "SELECT * FROM tanda_tangan_penelitian WHERE idx_penelitian = '$idx'");
+        $ttd_penelitian = mysqli_fetch_array($ttd_penelitian_check);
+        $query = "INSERT INTO tanda_tangan_penelitian (idx_penelitian, $column, $time_col, status_pengajuan) 
+                  VALUES ('$idx', '$pdf_nm', '$date', 'disetujui')";
+
         $query_update_penelitian = "UPDATE pengajuan_penelitian SET dokumen_lembar_pengesahan = '$pdf_nm' WHERE idx_penelitian = '$idx'";
         $query_verif = "INSERT INTO bukti_verifikasi(file_verif) VALUES('$webcame_name')";
 
         // Run the queries
         $result = mysqli_query($server1, $query);
+        $result_query_update_antrian = mysqli_query($server1, $query_update_antrian);
         $result_update_penelitian = mysqli_query($server1, $query_update_penelitian);
         $result_verif = mysqli_query($server1, $query_verif);
 
