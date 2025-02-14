@@ -497,53 +497,59 @@ if (isset($_GET['status'])) {
                 var file = e.target.files[0];
                 var fileInput = document.getElementById('file_dokumen_lembar_pengesahan');
                 var fileInputModal = document.getElementById('file_dokumen_lp_modal');
+                var var_div_ttd = document.getElementById('div-tanda-tangan');
 
-                // Create a new FileList object by copying files from fileInput
-                var dataTransfer = new DataTransfer();
-                for (var i = 0; i < fileInput.files.length; i++) {
-                    dataTransfer.items.add(fileInput.files[i]);
-                }
+                // Clear previous button
+                var_div_ttd.innerHTML = '';
 
-                // Assign the new FileList object to the file input field
-                fileInputModal.files = dataTransfer.files;
+                // Check if the uploaded file is a PDF
+                if (file && file.type === 'application/pdf') {
+                    // Create a new FileList object by copying files from fileInput
+                    var dataTransfer = new DataTransfer();
+                    for (var i = 0; i < fileInput.files.length; i++) {
+                        dataTransfer.items.add(fileInput.files[i]);
+                    }
+                    fileInputModal.files = dataTransfer.files;
 
-                var_div_ttd = document.getElementById('div-tanda-tangan');
-                var_div_ttd.innerHTML = "<br><button class='btn btn-success fileinput-button btn-xs m-r-5' type='button' onclick='handleClick()'>Verifikasi</button>";
+                    // Show the "Verifikasi" button
+                    var_div_ttd.innerHTML = "<br><button class='btn btn-success fileinput-button btn-xs m-r-5' type='button' onclick='handleClick()'>Verifikasi</button>";
 
-                var reader = new FileReader();
-                reader.onload = function() {
-                    var typedArray = new Uint8Array(this.result);
-                    pdfjsLib.getDocument(typedArray).promise.then(function(pdf) {
-                        pdf.getPage(1).then(function(page) {
-                            var viewport = page.getViewport({
-                                scale: 1.33
-                            });
-                            var pdfCanvas = document.createElement('canvas');
-                            pdfCanvas.width = viewport.width;
-                            pdfCanvas.height = viewport.height;
-                            var pdfContext = pdfCanvas.getContext('2d');
-                            page.render({
-                                canvasContext: pdfContext,
-                                viewport: viewport
-                            }).promise.then(function() {
-                                var imgElement = new Image();
-                                imgElement.src = pdfCanvas.toDataURL();
-                                imgElement.onload = function() {
-                                    var imgInstance = new fabric.Image(
-                                        fitImageIntoCanvas(imgElement), {
+                    var reader = new FileReader();
+                    reader.onload = function() {
+                        var typedArray = new Uint8Array(this.result);
+                        pdfjsLib.getDocument(typedArray).promise.then(function(pdf) {
+                            pdf.getPage(1).then(function(page) {
+                                var viewport = page.getViewport({
+                                    scale: 1.33
+                                });
+                                var pdfCanvas = document.createElement('canvas');
+                                pdfCanvas.width = viewport.width;
+                                pdfCanvas.height = viewport.height;
+                                var pdfContext = pdfCanvas.getContext('2d');
+                                page.render({
+                                    canvasContext: pdfContext,
+                                    viewport: viewport
+                                }).promise.then(function() {
+                                    var imgElement = new Image();
+                                    imgElement.src = pdfCanvas.toDataURL();
+                                    imgElement.onload = function() {
+                                        var imgInstance = new fabric.Image(fitImageIntoCanvas(imgElement), {
                                             left: 0,
                                             top: 0,
                                             selectable: false
                                         });
-                                    canvas.add(imgInstance);
-                                    canvas.renderAll();
-                                };
+                                        canvas.add(imgInstance);
+                                        canvas.renderAll();
+                                    };
+                                });
                             });
                         });
-                    });
-                };
-                reader.readAsArrayBuffer(file);
+                    };
+                    reader.readAsArrayBuffer(file);
+                } else {
+                }
             });
+
 
             document.getElementById('imageUpload').addEventListener('change', function(e) {
                 var file = e.target.files[0];
