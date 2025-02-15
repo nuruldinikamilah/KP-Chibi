@@ -82,18 +82,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $pdf2->SetMargins(0, 0, 0);  // Disable margins to match Fabric.js
   // Load the uploaded PDF and use it as the background
   if (isset($_FILES['pdf_file']) && $_FILES['pdf_file']['error'] == UPLOAD_ERR_OK) {
-    $fileType = mime_content_type($_FILES['pdf_file']['tmp_name']);
+    // $fileType = mime_content_type($_FILES['pdf_file']['tmp_name']);
     
-    if ($fileType === 'application/pdf') {
+    // if ($fileType === 'application/pdf') {
 
-        $pdfPath = $_FILES['pdf_file']['tmp_name'];
-        $pdf2 = new Fpdi();
-        $pageCount = $pdf2->setSourceFile($pdfPath);
-        $templateId = $pdf2->importPage(1);
-        $pdf2->useTemplate($templateId, 0, 0, 210, 297); // A4 size
-    } else {
-        echo "<script>alert('Please upload a valid PDF file.'); window.location.href='upload_page.php';</script>";
-    }
+    $pdfPath = $_FILES['pdf_file']['tmp_name'];
+    $pageCount = $pdf2->setSourceFile($pdfPath);
+    $templateId = $pdf2->importPage(1);
+    $pdf2->useTemplate($templateId, 0, 0, 210, 297); // A4 size
+    // } else {
+    //     echo "<script>alert('Please upload a valid PDF file.'); window.location.href='upload_page.php';</script>";
+    // }
 } else {
     echo "<script>alert('Error uploading PDF. Please try again.'); window.location.href='upload_page.php';</script>";
 }
